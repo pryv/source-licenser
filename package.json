@@ -1,0 +1,31 @@
+{
+  "name": "@pryv/licenser",
+  "version": "1.0.0",
+  "description": "Command line tool to add license header to all files (recursive) in a directory",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pryv/app-node-licenser.git"
+  },
+  "keywords": [
+    "Pryv",
+    "Licenser",
+    "License"
+  ],
+  "author": "Pryv S.A.",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/pryv/app-node-licenser/issues"
+  },
+  "homepage": "https://github.com/pryv/app-node-licenser#readme",
+  "dependencies": {
+    "@pryv/boiler": "git+https://github.com/pryv/lib-node-boiler.git",
+    "lodash": "^4.17.20",
+    "prepend-file": "^2.0.0",
+    "sort-package-json": "^1.48.1"
+  }
+}

@@ -1,0 +1,22 @@
+---
+ignores: # If found in path contained elements will be ignored
+- node_modules
+- ".git"
+- dest/dist/
+
+fileSpecs:
+
+ package.json: # For package.json 
+
+    json:
+      force:  # Following fields will be replaced anyway
+        author: Pryv S.A. <support@pryv.com> (http://pryv.com)
+        license: BSD-3-Clause
+        private: true
+      defaults: # Following fields will be replaced if not present
+        homepage: http://pryv.com
+        description: This package is part of Open Pryv.io
+        version: UNKOWN
+      sortPackage: true # Nice ordering of packge items 
+
+    addSibling: true # Add a LICENSE file in the same directory than package.json

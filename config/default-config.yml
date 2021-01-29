@@ -1,0 +1,29 @@
+# Do not edit .. make your changes in production-config.yml or your own config file
+
+---
+ignores: # If found in path contained elements will be ignored
+- node_modules
+- ".git"
+- dest/dist/
+
+fileSpecs:
+  ".js": # All Javascript source code file
+    addHeader:
+      startBlock: >- 
+        /**
+         * @license
+      lineBlock: " * "
+      endBlock: >
+        */
+
+  README.md: # All README.md files
+    addTrailer:
+      action: addTrailer
+      startBlock: "# License"
+      lineBlock: ''
+      endBlock: ''
+ 
+
+
+
+
