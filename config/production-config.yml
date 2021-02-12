@@ -24,8 +24,8 @@ fileSpecs:
         /**
          * @license
       lineBlock: " * "
-      endSearch: "*/" # only used to detect enf od license block.
-      endBlock: "\n */"
+      endSearch: "*/\n" # only used to detect enf od license block.
+      endBlock: "\n */\n"
 
   README.md: # All README.md files
     addTrailer:
