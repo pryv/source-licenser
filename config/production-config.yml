@@ -10,13 +10,12 @@ fileSpecs:
 
     json:
       force:  # Following fields will be replaced anyway
-        author: Pryv S.A. <support@pryv.com> (http://pryv.com)
-        license: BSD-3-Clause
+        author: "{AUTHOR_NAME} <{AUTHOR_EMAIL}> ({AUTHOR_WEB})"
+        license: "{SPDX}"
         private: true
       defaults: # Following fields will be replaced if not present
-        homepage: http://pryv.com
-        description: This package is part of Open Pryv.io
-        version: UNKOWN
+        homepage: "{HOMEPAGE}"
+        description: "{DESCRIPTION}"
       sortPackage: true # Nice ordering of packge items 
 
     addSibling: true # Add a LICENSE file in the same directory than package.json

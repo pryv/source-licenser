@@ -1,4 +1,41 @@
+# Source Licenser
+
+Add license information to sourcefiles. 
+
+- Detect existing license content and replace it if needed.
+- Can be extended for other file types. 
+
+How it works:
+
+- Actions are defined per fileTypes ex: `.js` , `REAMDE.md`, `package.json`. 
+
+- As per `v1.0.0` Actions can be: 
+
+  - `addHeader` :  Add license text at the beggining of the file. Comment characters can be defined.
+
+    ​	Exemple: for `.js` file add
+
+    ```javascript
+    /**
+     * licence content
+     */
+    ```
+
+  - `addTrailer`: Add license text at the end of the file. Comment characters can be defined.
+
+  - `addSibling`: Add a `LICENSE` text file at the same level than the matching file.
+
+  - `json`: Add or Complete fields of json files. (Ex: package.json)
+
+### Usage
+
+`source-licenser <license-txt-file> <config.yml> <directory> `
+
+
+
 ## Script to add license header to all files (recursive) in a directory
+
+
 
 ### Actions:
 
@@ -40,8 +77,15 @@ license({
 
 
 
+
+
+
+
+
+
+
 # License
-Copyright (c) 2021 Pryv S.A. https://pryv.com
+Copyright (c) 2020-2021 Pryv S.A https://pryv.com
 
 This file is part of Open-Pryv.io and released under BSD-Clause-3 License
 

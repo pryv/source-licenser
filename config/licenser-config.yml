@@ -1,0 +1,13 @@
+templating: ## Add your own values they will be replaced in fileSpecs and source licenseFile
+  AUTHOR_NAME: "Pryv S.A"
+  AUTHOR_EMAIL: info@pryv.com
+  AUTHOR_WEB: https://pryv.com
+  DESCRIPTION: "Add license information to sourcefiles."
+  HOMEPAGE: https://github.com/pryv/app-node-licenser
+  SPDX: BSD-3-Clause
+
+license:
+  year: ## Year value will be computed in the template as "YEARS" if start == end it will be just start otherwise START - END
+    start: 2020
+    end: CURRENT_YEAR
+  

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2021 Pryv S.A. https://pryv.com
+ * Copyright (c) 2020-2021 Pryv S.A https://pryv.com
  * 
  * This file is part of Open-Pryv.io and released under BSD-Clause-3 License
  * 
@@ -33,29 +33,61 @@
  * */
 
 
-const logger = require('@pryv/boiler').getLogger('validate-config');
 const fs = require('fs');
 const path = require('path');
 
-function error(text, key, obj) {
-  logger.error('Configuration invalid - setting: [ ' + key + ' ] => ' + text, obj);
-  logger.info('Usage node src/index.js --config=<config-file>.yaml');
+// -- read the arguments
+if (process.argv.length < 4) {
+  exitWithTip('missing arguments');
+}
+
+// CONFIG file
+const configFile = path.resolve(path.normalize(process.argv[2]));
+if (! fs.existsSync(configFile)) {
+  exitWithTip('[' + configFile + '] is not an existing file');
+}
+
+// LICENSE file
+const licensePath = path.resolve(path.normalize(process.argv[3]));
+if (! fs.existsSync(licensePath)) {
+  exitWithTip('[' + licensePath + '] is not an existing file');
+}
+try {
+  // load license file 
+  license = '\n' + fs.readFileSync(licensePath, 'utf-8');
+} catch (e) {
+  exitWithTip(e.message + ' while reading [' + licensePath + '] LICENSE file');
+}
+
+// SOURCE DIR
+const sourcePath = path.resolve(path.normalize(process.argv[4]));
+if (! fs.existsSync(sourcePath) || ! fs.lstatSync(sourcePath).isDirectory()) {
+  exitWithTip('[' + sourcePath + '] is not existing or not a directory ');
+}
+
+
+require('@pryv/boiler').init(
+  {
+    appName: 'licenser',
+    baseConfigDir: path.resolve(__dirname, '../config'),
+    extraConfigs: [{
+      scope: 'local',
+      file: configFile,
+    }, {
+      scope: 'data',
+      data: {
+        src: sourcePath,
+        licenseSource: license
+      }
+    }]
+  }
+);
+
+
+// -- ready
+
+function exitWithTip(tip) {
+  console.error('Error: ' + tip +
+    '\nUsage: ' + path.basename(process.argv[1]) + ' <config.yml> <license-txt-file> <directory>');
   process.exit(1);
 }
-
-function validate(config) {
-  // LICENSE file
-  const licenseSourceFile = config.get('license:file');
-  if (! licenseSourceFile) error('Missing source license file setting', 'license:file');
-  const licenseSourceFileFull = path.resolve(process.cwd(), licenseSourceFile);
-  if (! fs.existsSync(licenseSourceFileFull)) error('License file not found', 'license:file', licenseSourceFileFull);
-
-  const srcDir = config.get('src');
-  if (! srcDir) error('Missing source directory setting', 'src');
-  const srcDirFull = path.resolve(process.cwd(), srcDir);
-  if (! fs.existsSync(srcDirFull)) error('License file not found', 'license:file', srcDirFull);
-
-}
-
-
-module.exports = validate;

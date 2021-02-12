@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2021 Pryv S.A. https://pryv.com
+ * Copyright (c) 2020-2021 Pryv S.A https://pryv.com
  * 
  * This file is part of Open-Pryv.io and released under BSD-Clause-3 License
  * 
@@ -31,32 +31,29 @@
  * 
  * SPDX-License-Identifier: BSD-3-Clause
  * */
-
-
 const fs = require('fs');
 const path = require('path');
 
-const { getConfig, getLogger } = require('@pryv/boiler').init(
-  {
-    appName: 'licenser',
-    baseConfigDir: path.resolve(__dirname, '../config')
-  });
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+require('./load-config');
+const { getConfig } = require('@pryv/boiler');
 
-const logger = getLogger();
-const validateConfig = require('./validate-config');
+const applyTemplate = require('./templating');
+
 
 let config, ignores, fileSpecs, specKeys, license;
 
+const logger = require('@pryv/boiler').getLogger();
 
 async function start() {
+  await applyTemplate();
+
   config = await getConfig();
-  validateConfig(config);
+
   ignores = config.get('ignores');
   fileSpecs = config.get('fileSpecs');
   specKeys = Object.keys(fileSpecs);
-
-  // load license file 
-  license = '\n' + fs.readFileSync(config.get('license:file'), 'utf-8');
+  license = config.get('license:content');
 
   await loadAction(require('./actions/addHeader'));
   await loadAction(require('./actions/json'));
@@ -78,6 +75,9 @@ async function loadAction(action) {
     for (const actionKey of Object.keys(fileSpec)) { // for each found action "addTrailer", "json", ....
       if (actionKey === action.key) {
         logger.info('Loading: ' + action.key + ' for ' + specKey);
+        if (typeof fileSpec[actionKey] === 'boolean' && fileSpec[actionKey]) {
+          fileSpec[actionKey] = {};
+        }
         await action.prepare(fileSpec[actionKey], license);
       }
     }
@@ -90,7 +90,7 @@ function checkInit() {
     for (const actionKey of Object.keys(fileSpecs[specKey])) {
       const actionItem = fileSpecs[specKey][actionKey];
       if (!actionItem.actionMethod) {
-        logger.error('Handler "' + actionItem.action + '" for "' + specKey + '" has not been initialized');
+        logger.error('Handler "' + actionItem.action + '" for "' + specKey + ':' + actionKey + '" has not been initialized');
         process.exit(0);
       }
     }
@@ -155,7 +155,7 @@ async function loop(dir) {
       const spec = getFileSpec(fullPath);
       if (spec) await handleMatchingFile(fullPath, spec);
     } else {
-      console.log(stat);
+      logger.info(stat);
       throw new Error();
     }
   }
@@ -163,13 +163,12 @@ async function loop(dir) {
 
 
 
-// --- ru 
+// --- run
 
 let count = 0;
 (async () => {
   const startTime = Date.now();
   await start();
-  console.log('Added license to ' + count + ' files in ' + Math.round((Date.now() - startTime) / 10) / 100 + ' s');
+  logger.info('Added license to ' + count + ' files in ' + Math.round((Date.now() - startTime) / 10) / 100 + ' s');
 })();
-
 

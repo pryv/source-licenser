@@ -31,44 +31,56 @@
  * 
  * SPDX-License-Identifier: BSD-3-Clause
  * */
-
-const fs = require('fs');
 const _ = require('lodash');
-const sortPackageJson = require('sort-package-json');
+//const template = require('lodash.template');
+const { getConfig } = require('@pryv/boiler');
 
 
-async function action(fullPath, spec) {
-  // load .json file
-  let package = require(fullPath);
-  if (spec.force) {
-    package = _.merge(package, spec.force);
+
+async function applyTemplate() {
+  const config = await getConfig();
+  
+  // -- get YEARS values
+  const years = config.get('license:year');
+  const now = new Date();
+  
+  if (! years.start || years.start === 'CURRENT_YEAR') years.start = now.getFullYear();
+  let YEARS = years.start;
+  if (! years.end || years.end === 'CURRENT_YEAR') years.end = now.getFullYear();
+  if (years.start !== years.end) {
+    YEARS = years.start + '-' + years.end;
   }
-  if (spec.defaults) {
-    package = _.mergeWith(package, spec.defaults, function (src, dest) {
-      if (typeof src === 'undefined') return dest;
-      return src;
-    });
+  config.set('templating:YEARS', YEARS);
+
+
+  const templateValues = config.get('templating');
+
+  // -- apply template on LICENSE TEXT
+  _.templateSettings.interpolate = /{([A-Z_]+)}/g;
+  const license = _.template(config.get('licenseSource'))(templateValues);
+  config.set('license:content', license);
+
+  // -- apply template on strings founds in fileSpecs
+  function onPath(path) {
+    const c = config.get(path);
+    if (!c) return;
+    if (typeof c === 'string') {
+      const newC = _.template(c)(templateValues);
+      if (newC !== c) config.set(path, newC);
+      return;
+    }
+    if (typeof c === 'object') {
+      if (Array.isArray(c)) {
+        // not handled
+        return;
+      }
+      
+      for (let key of Object.keys(c)) {
+        onPath(path + ':' + key);
+      }
+    }
   }
-  if (spec.sortPackage) {
-    package = sortPackageJson(package);
-  }
-  fs.writeFileSync(fullPath, JSON.stringify(package, null, 2));
+  onPath('fileSpecs');
 }
 
-/**
- * Eventually prepare fileSpecs (can be called multiple times)
- * @param {Object} actionItem 
- * @param {String} license - content of the license
- * @return {Function} the action to apply;
- */
-async function prepare(actionItem, license) {
-  actionItem.actionMethod = async function (fullPath) {
-    await action(fullPath, actionItem);
-  };
-}
-
-
-module.exports = {
-  prepare: prepare,
-  key: 'json'
-}
+module.exports = applyTemplate;

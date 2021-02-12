@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2021 Pryv S.A. https://pryv.com
+ * Copyright (c) 2020-2021 Pryv S.A https://pryv.com
  * 
  * This file is part of Open-Pryv.io and released under BSD-Clause-3 License
  * 
@@ -45,9 +45,10 @@ let licenseContent;
  * @param {String} license - content of the license
  * @return {Function} the action to apply;
  */
-async function prepare(actionItem, license) {
+async function prepare(spec, license) {
   licenseContent = license;
-  actionItem.actionMethod = async function (fullPath) {
+  spec.dummy = 'dummy';
+  spec.actionMethod = async function (fullPath) {
     const licensePath = path.resolve(path.dirname(fullPath), 'LICENSE');
     fs.writeFileSync(licensePath, licenseContent);
   };

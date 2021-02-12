@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2021 Pryv S.A. https://pryv.com
+ * Copyright (c) 2020-2021 Pryv S.A https://pryv.com
  * 
  * This file is part of Open-Pryv.io and released under BSD-Clause-3 License
  * 
@@ -51,13 +51,12 @@ async function checkFileHeaderAndClean(fullPath, spec) {
   // startBlock found read all file and rewrite without startBlock
   const fileContent = fs.readFileSync(fullPath, 'utf8');
   const endBlockPos = fileContent.indexOf(spec.endBlock);
-  //onsole.log('Updated >> ' + fullPath);
   fs.writeFileSync(fullPath, fileContent.substr(fileContent.indexOf(spec.endBlock) + spec.endBlock.length));
   return true;
 }
 
 /**
- * Perfoem the action on this file with this spec
+ * Perform the action on this file with this spec
  */
 async function action(fullPath, spec) {
   const cleaned = await checkFileHeaderAndClean(fullPath, spec);

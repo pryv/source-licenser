@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2021 Pryv S.A. https://pryv.com
+ * Copyright (c) 2020-2021 Pryv S.A https://pryv.com
  * 
  * This file is part of Open-Pryv.io and released under BSD-Clause-3 License
  * 
@@ -54,7 +54,6 @@ async function checkFileAndClean(fullPath, spec) {
     fileContent = fileContent.substr(0, fileContent.indexOf(spec.startBlock));
   }
   fs.writeFileSync(fullPath, fileContent + spec.license);
-  console.log('Updated triling >> ' + fullPath);
   return true;
 }
 

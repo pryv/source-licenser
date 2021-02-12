@@ -5,6 +5,7 @@ ignores: # If found in path contained elements will be ignored
 - node_modules
 - ".git"
 - dest/dist/
+- bin/
 
 fileSpecs:
   ".js": # All Javascript source code file
@@ -23,7 +24,8 @@ fileSpecs:
       lineBlock: ''
       endBlock: ''
  
+templating:
 
-
+license:
 
 
