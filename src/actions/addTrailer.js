@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * SPDX-License-Identifier: BSD-3-Clause
- * */
+ */
 
 /**
  * Add license at the END of the file

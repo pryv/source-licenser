@@ -1,6 +1,7 @@
 ---
 ignores: # If found in path contained elements will be ignored
-
+- node_modules
+- ".git"
 
 fileSpecs:
 
@@ -23,8 +24,8 @@ fileSpecs:
         /**
          * @license
       lineBlock: " * "
-      endBlock: >
-        */
+      endSearch: "*/" # only used to detect enf od license block.
+      endBlock: "\n */"
 
   README.md: # All README.md files
     addTrailer:

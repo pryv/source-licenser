@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * SPDX-License-Identifier: BSD-3-Clause
- * */
+ */
 const _ = require('lodash');
 //const template = require('lodash.template');
 const { getConfig } = require('@pryv/boiler');

@@ -30,8 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * SPDX-License-Identifier: BSD-3-Clause
- * */
-
+ */
 const fs = require('fs');
 const prepend = require('prepend-file');
 
@@ -50,8 +49,8 @@ async function checkFileHeaderAndClean(fullPath, spec) {
   if (!buffer.equals(spec.startBlockBuffer)) return false; // does not match return
   // startBlock found read all file and rewrite without startBlock
   const fileContent = fs.readFileSync(fullPath, 'utf8');
-  const endBlockPos = fileContent.indexOf(spec.endBlock);
-  fs.writeFileSync(fullPath, fileContent.substr(fileContent.indexOf(spec.endBlock) + spec.endBlock.length));
+  const endBlockPos = fileContent.indexOf(spec.endSearch);
+  fs.writeFileSync(fullPath, fileContent.substr(endBlockPos + spec.endSearch.length));
   return true;
 }
 
