@@ -34,8 +34,7 @@ How it works
 ### Setup
 
 1. Get a source license file `<license-txt-file>` exemple: `config/LICENSE.src`
-2. Copy `config/license-config.yml` and edit as per your needs.
-3. Eventually complete and edit `config/production-config.yml` 
+2. Copy `config/license-config.yml` and edit as per your needs. (check default-config for inspiration)
 
 ### Usage
 

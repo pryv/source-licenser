@@ -1,11 +1,39 @@
 # Do not edit .. make your changes in production-config.yml or your own config file
-
 ---
 ignores: # If found in path contained elements will be ignored
 - node_modules
 - ".git"
 
 fileSpecs:
+
+  package.json: # For package.json 
+    json:
+      force:  # Following fields will be replaced anyway
+        author: "{AUTHOR_NAME} <{AUTHOR_EMAIL}> ({AUTHOR_WEB})"
+        license: "{SPDX}"
+        private: true
+      defaults: # Following fields will be replaced if not present
+        homepage: "{HOMEPAGE}"
+        description: "{DESCRIPTION}"
+      sortPackage: true # Nice ordering of packge items 
+
+    addSibling: true # Add a LICENSE file in the same directory than package.json
+
+  ".js": # All Javascript source code file
+    addHeader:
+      startBlock: >- 
+        /**
+         * @license
+      lineBlock: " * "
+      endSearch: "*/\n" # only used to detect enf od license block.
+      endBlock: "\n */\n"
+
+  README.md: # All README.md files
+    addTrailer:
+      action: addTrailer
+      startBlock: "# License"
+      lineBlock: ''
+      endBlock: ''
  
 templating:
 
