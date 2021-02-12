@@ -7,7 +7,7 @@ Add license information to source files.
 
 How it works
 
-- Actions are defined per fileTypes ex: `.js` , `REAMDE.md`, `package.json`. 
+- Actions are defined per fileTypes ex: `.js` , `README.md`, `package.json`. 
 
 - As per `v1.0.0` Actions can be: 
 
