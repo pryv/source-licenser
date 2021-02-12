@@ -4,25 +4,8 @@
 ignores: # If found in path contained elements will be ignored
 - node_modules
 - ".git"
-- dest/dist/
-- bin/
 
 fileSpecs:
-  ".js": # All Javascript source code file
-    addHeader:
-      startBlock: >- 
-        /**
-         * @license
-      lineBlock: " * "
-      endBlock: >
-        */
-
-  README.md: # All README.md files
-    addTrailer:
-      action: addTrailer
-      startBlock: "# License"
-      lineBlock: ''
-      endBlock: ''
  
 templating:
 

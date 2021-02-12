@@ -1,8 +1,8 @@
 {
-  "name": "@pryv/licenser",
+  "name": "source-licenser",
   "version": "1.0.0",
   "private": true,
-  "description": "Command line tool to add license header to all files (recursive) in a directory",
+  "description": "Add license information to source files.",
   "keywords": [
     "Pryv",
     "Licenser",

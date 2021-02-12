@@ -1,13 +1,10 @@
 ---
 ignores: # If found in path contained elements will be ignored
-- node_modules
-- ".git"
-- dest/dist/
+
 
 fileSpecs:
 
- package.json: # For package.json 
-
+  package.json: # For package.json 
     json:
       force:  # Following fields will be replaced anyway
         author: "{AUTHOR_NAME} <{AUTHOR_EMAIL}> ({AUTHOR_WEB})"
@@ -19,3 +16,19 @@ fileSpecs:
       sortPackage: true # Nice ordering of packge items 
 
     addSibling: true # Add a LICENSE file in the same directory than package.json
+
+  ".js": # All Javascript source code file
+    addHeader:
+      startBlock: >- 
+        /**
+         * @license
+      lineBlock: " * "
+      endBlock: >
+        */
+
+  README.md: # All README.md files
+    addTrailer:
+      action: addTrailer
+      startBlock: "# License"
+      lineBlock: ''
+      endBlock: ''
