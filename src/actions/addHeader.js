@@ -39,6 +39,7 @@ const prepend = require('prepend-file');
  * If yes clean the file up to the end
  * @param {string} fullPath 
  * @param {Object} spec 
+ * @returns {boolean} if true license should be added, is false, skip
  */
 async function checkFileHeaderAndClean(fullPath, spec) {
   const fd = fs.openSync(fullPath, 'r');
@@ -46,10 +47,16 @@ async function checkFileHeaderAndClean(fullPath, spec) {
   fs.readSync(fd, buffer, 0, spec.startBlockLength, 0);
   //console.log(buffer, buffer.toString('utf-8'), spec.startBlockLength);
   fs.closeSync(fd);
-  if (!buffer.equals(spec.startBlockBuffer)) return false; // does not match return
+  if (!buffer.equals(spec.startBlockBuffer)) return true; // does not match return
   // startBlock found read all file and rewrite without startBlock
   const fileContent = fs.readFileSync(fullPath, 'utf8');
   const endBlockPos = fileContent.indexOf(spec.endSearch);
+
+  // check if content is already having correct license text
+
+  const actualContent = fileContent.substr(0, endBlockPos + spec.endSearch.length);
+  if (actualContent === spec.license) return false; // skip
+
   fs.writeFileSync(fullPath, fileContent.substr(endBlockPos + spec.endSearch.length));
   return true;
 }
@@ -58,8 +65,12 @@ async function checkFileHeaderAndClean(fullPath, spec) {
  * Perform the action on this file with this spec
  */
 async function action(fullPath, spec) {
-  const cleaned = await checkFileHeaderAndClean(fullPath, spec);
-  prepend.sync(fullPath, spec.license);
+  const addLicense = await checkFileHeaderAndClean(fullPath, spec);
+  if (addLicense) {
+    prepend.sync(fullPath, spec.license);
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -78,7 +89,7 @@ async function prepare(spec, license) {
   }
   spec.license = spec.startBlock + myLicense + spec.endBlock; // prepare license block
   spec.actionMethod = async function (fullPath) {
-    await action(fullPath, spec);
+    return await action(fullPath, spec);
   };
 }
 

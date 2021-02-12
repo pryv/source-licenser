@@ -40,6 +40,7 @@ const sortPackageJson = require('sort-package-json');
 async function action(fullPath, spec) {
   // load .json file
   let package = require(fullPath);
+  const actualContent = JSON.stringify(package, null, 2);
   if (spec.force) {
     package = _.merge(package, spec.force);
   }
@@ -52,7 +53,11 @@ async function action(fullPath, spec) {
   if (spec.sortPackage) {
     package = sortPackageJson(package);
   }
-  fs.writeFileSync(fullPath, JSON.stringify(package, null, 2));
+  const newContent = JSON.stringify(package, null, 2)
+  if (actualContent === newContent) return false; // skip
+
+  fs.writeFileSync(fullPath, newContent);
+  return true;
 }
 
 /**
@@ -63,7 +68,7 @@ async function action(fullPath, spec) {
  */
 async function prepare(actionItem, license) {
   actionItem.actionMethod = async function (fullPath) {
-    await action(fullPath, actionItem);
+    return await action(fullPath, actionItem);
   };
 }
 

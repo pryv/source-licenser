@@ -128,9 +128,19 @@ function ignore(fullPath) {
  * @param {Object} spec the Specifications from fileSpecs matching this file
  */
 async function handleMatchingFile(fullPath, spec) {
+  let updatedFile = false;
   for (const actionItemKey of Object.keys(spec)) {
     const actionItem = spec[actionItemKey];
-    actionItem.actionMethod(fullPath);
+    const res = await actionItem.actionMethod(fullPath);
+    if (res) { 
+      updatedFile = true;
+      logger.info(actionItemKey +' >>> ' + fullPath);
+    }
+  }
+
+  if (updatedFile) { 
+    updated++;
+    
   }
   count++;
 }
@@ -166,9 +176,10 @@ async function loop(dir) {
 // --- run
 
 let count = 0;
+let updated = 0;
 (async () => {
   const startTime = Date.now();
   await start();
-  logger.info('Added license to ' + count + ' files in ' + Math.round((Date.now() - startTime) / 10) / 100 + ' s');
+  logger.info('Check license on ' + count + ' files, updated ' + updated + ' files in ' + Math.round((Date.now() - startTime) / 10) / 100 + ' s');
 })();
 

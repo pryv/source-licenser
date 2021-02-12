@@ -51,6 +51,8 @@ async function checkFileAndClean(fullPath, spec) {
   if (endBlockPos > 1) {
     //const toBeRemoved = fileContent.substr(fileContent.indexOf(spec.startBlock) + spec.startBlock.length)
     //console.log('toBeRemoved >> ' + fullPath, toBeRemoved);
+    const actualContent = '\n' + fileContent.substr(fileContent.indexOf(spec.startBlock));
+    if (actualContent === spec.license) return false; // skip
     fileContent = fileContent.substr(0, fileContent.indexOf(spec.startBlock));
   }
   fs.writeFileSync(fullPath, fileContent + spec.license);
@@ -68,7 +70,7 @@ async function checkFileAndClean(fullPath, spec) {
 async function prepare(spec, license) {
   spec.license = '\n' + spec.startBlock + license.split('\n').join('\n' + spec.lineBlock) + spec.endBlock; // prepare license block
   spec.actionMethod = async function (fullPath) {
-    await checkFileAndClean(fullPath, spec);
+    return await checkFileAndClean(fullPath, spec);
   };
 }
 

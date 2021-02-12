@@ -85,20 +85,6 @@ Update a '.json' field. (mainly used for package.json)
   - **defaults**: Update fields if not defined
   - **sortPackage**: true / false. Order the fields as par `package.json` 
 
-### Notes:
-
-Optimizations to do:
- 1- do not remove /replace license in files that have a valid license header
- 2- when difference is found and license needs to be changed. Directly
-   change the license instead of having an intermediary remove - save step.
-
-
-
-
-
-
-
-
 # License
 Copyright (c) 2020-2021 Pryv S.A https://pryv.com
 
