@@ -50,8 +50,10 @@ async function prepare(spec, license) {
   spec.dummy = 'dummy';
   spec.actionMethod = async function (fullPath) {
     const licensePath = path.resolve(path.dirname(fullPath), 'LICENSE');
-    const actualContent = fs.readFileSync(licensePath, 'utf-8');
-    if (actualContent === licenseContent) return false;
+    if (fs.existsSync(licensePath)) {
+      const actualContent = fs.readFileSync(licensePath, 'utf-8');
+      if (actualContent === licenseContent) return false;
+    }
     fs.writeFileSync(licensePath, licenseContent);
     return true;
   };

@@ -10,4 +10,10 @@ license:
   year: ## Year value will be computed in the template as "YEARS" if start == end it will be just start otherwise START - END
     start: 2020
     end: CURRENT_YEAR
+
+fileSpecs:
+  package.json: # For package.json 
+    json:
+      force:  # Following fields will be replaced anyway
+        public: true
   
