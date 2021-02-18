@@ -1,7 +1,7 @@
 {
   "name": "source-licenser",
   "version": "1.0.3",
-  "private": true,
+  "private": false,
   "description": "Add license information to source files.",
   "keywords": [
     "Pryv",

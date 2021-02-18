@@ -16,4 +16,5 @@ fileSpecs:
     json:
       force:  # Following fields will be replaced anyway
         public: true
+        private: false
   
