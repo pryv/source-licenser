@@ -35,20 +35,15 @@ const fs = require('fs');
 const path = require('path');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-require('./load-config');
-const { getConfig } = require('@pryv/boiler');
+const config = require('./load-config');
 
 const applyTemplate = require('./templating');
 
 
-let config, ignores, fileSpecs, specKeys, license;
-
-const logger = require('@pryv/boiler').getLogger();
+let ignores, fileSpecs, specKeys, license;
 
 async function start() {
   await applyTemplate();
-
-  config = await getConfig();
 
   ignores = config.get('ignores');
   fileSpecs = config.get('fileSpecs');
@@ -74,7 +69,7 @@ async function loadAction(action) {
     fileSpec = fileSpecs[specKey];
     for (const actionKey of Object.keys(fileSpec)) { // for each found action "addTrailer", "json", ....
       if (actionKey === action.key) {
-        logger.info('Loading: ' + action.key + ' for ' + specKey);
+        console.log('Loading: ' + action.key + ' for ' + specKey);
         if (typeof fileSpec[actionKey] === 'boolean' && fileSpec[actionKey]) {
           fileSpec[actionKey] = {};
         }
@@ -90,7 +85,7 @@ function checkInit() {
     for (const actionKey of Object.keys(fileSpecs[specKey])) {
       const actionItem = fileSpecs[specKey][actionKey];
       if (!actionItem.actionMethod) {
-        logger.error('Handler "' + actionItem.action + '" for "' + specKey + ':' + actionKey + '" has not been initialized');
+        console.error('Handler "' + actionItem.action + '" for "' + specKey + ':' + actionKey + '" has not been initialized');
         process.exit(0);
       }
     }
@@ -134,7 +129,7 @@ async function handleMatchingFile(fullPath, spec) {
     const res = await actionItem.actionMethod(fullPath);
     if (res) { 
       updatedFile = true;
-      logger.info(actionItemKey +' >>> ' + fullPath);
+      console.log(actionItemKey +' >>> ' + fullPath);
     }
   }
 
@@ -165,7 +160,7 @@ async function loop(dir) {
       const spec = getFileSpec(fullPath);
       if (spec) await handleMatchingFile(fullPath, spec);
     } else {
-      logger.info(stat);
+      console.log(stat);
       throw new Error();
     }
   }
@@ -180,6 +175,6 @@ let updated = 0;
 (async () => {
   const startTime = Date.now();
   await start();
-  logger.info('Check license on ' + count + ' files, updated ' + updated + ' files in ' + Math.round((Date.now() - startTime) / 10) / 100 + ' s');
+  console.log('Check license on ' + count + ' files, updated ' + updated + ' files in ' + Math.round((Date.now() - startTime) / 10) / 100 + ' s');
 })();
 

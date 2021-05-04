@@ -36,6 +36,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const nconf = require('nconf');
+nconf.formats.yaml = require('./lib/nconf-yaml');
+
 // -- read the arguments
 if (process.argv.length < 4) {
   exitWithTip('missing arguments');
@@ -65,24 +68,28 @@ if (! fs.existsSync(sourcePath) || ! fs.lstatSync(sourcePath).isDirectory()) {
   exitWithTip('[' + sourcePath + '] is not existing or not a directory ');
 }
 
+// Load config
+const store = new nconf.Provider();
 
-require('@pryv/boiler').init(
-  {
-    appName: 'licenser',
-    baseConfigDir: path.resolve(__dirname, '../config'),
-    extraConfigs: [{
-      scope: 'local',
-      file: configFile,
-    }, {
-      scope: 'data',
-      data: {
-        src: sourcePath,
-        licenseSource: license
-      }
-    }]
-  }
-);
+// 0. memory at top
+store.use('memory');
 
+// get config from arguments and env variables
+// memory must come first for config.set() to work without loading config files
+// 3. `process.env`
+// 4. `process.argv`
+store.argv({parseValues: true}).env({parseValues: true, separator: '__'});
+
+loadFile('local', configFile);
+store.use('license', { 
+  type: 'literal', 
+  store: {
+    src: sourcePath,
+    licenseSource: license
+  } 
+});
+
+loadFile('default-file', path.resolve(__dirname, '../config/default-config.yml'));
 
 // -- ready
 
@@ -91,3 +98,24 @@ function exitWithTip(tip) {
     '\nUsage: ' + path.basename(process.argv[1]) + ' <config.yml> <license-txt-file> <directory>');
   process.exit(1);
 }
+
+function loadFile(scope, filePath) {
+
+  if (fs.existsSync(filePath)) {
+   
+    if (filePath.endsWith('.js')) {  // JS file
+      const conf = require(filePath);
+      store.use(scope, { type: 'literal', store: conf });
+    } else {   // JSON or YAML
+      const options = { file: filePath }
+      if (filePath.endsWith('.yml') || filePath.endsWith('.yaml')) { options.format = nconf.formats.yaml }
+      store.file(scope, options);
+    }
+
+    //console.info('Loaded [' + scope + '] from file: ' + filePath)
+  } else {
+    console.error('Cannot find file: ' + filePath + ' for scope [' + scope + ']');
+  }
+}
+
+module.exports = store;

@@ -1,6 +1,6 @@
 {
   "name": "source-licenser",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": false,
   "description": "Add license information to source files.",
   "keywords": [
@@ -26,11 +26,12 @@
     "licenseme": "./bin/source-licenser ./config/licenser-config.yml ./config/LICENSE.src ./"
   },
   "dependencies": {
-    "@pryv/boiler": "git+https://github.com/pryv/lib-node-boiler.git",
-    "lodash": "^4.17.20",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
     "lodash.template": "^4.5.0",
+    "nconf": "^0.11.2",
     "prepend-file": "^2.0.0",
-    "sort-package-json": "^1.48.1"
+    "sort-package-json": "^1.49.0"
   },
   "public": true
 }

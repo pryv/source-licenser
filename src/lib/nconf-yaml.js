@@ -31,55 +31,12 @@
  * 
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const _ = require('lodash');
-//const template = require('lodash.template');
-const config = require('./load-config');
+const yaml = require('js-yaml');
 
-
-
-async function applyTemplate() {
-  
-  // -- get YEARS values
-  const years = config.get('license:year');
-  const now = new Date();
-  
-  if (! years.start || years.start === 'CURRENT_YEAR') years.start = now.getFullYear();
-  let YEARS = years.start;
-  if (! years.end || years.end === 'CURRENT_YEAR') years.end = now.getFullYear();
-  if (years.start !== years.end) {
-    YEARS = years.start + '-' + years.end;
-  }
-  config.set('templating:YEARS', YEARS);
-
-
-  const templateValues = config.get('templating');
-
-  // -- apply template on LICENSE TEXT
-  _.templateSettings.interpolate = /{([A-Z_]+)}/g;
-  const license = _.template(config.get('licenseSource'))(templateValues);
-  config.set('license:content', license);
-
-  // -- apply template on strings founds in fileSpecs
-  function onPath(path) {
-    const c = config.get(path);
-    if (!c) return;
-    if (typeof c === 'string') {
-      const newC = _.template(c)(templateValues);
-      if (newC !== c) config.set(path, newC);
-      return;
-    }
-    if (typeof c === 'object') {
-      if (Array.isArray(c)) {
-        // not handled
-        return;
-      }
-      
-      for (let key of Object.keys(c)) {
-        onPath(path + ':' + key);
-      }
-    }
-  }
-  onPath('fileSpecs');
+exports.stringify = function (obj, options) {
+  return yaml.dump(obj, options);
 }
 
-module.exports = applyTemplate;
+exports.parse = function (obj, options) {
+  return yaml.load(obj, options);
+}
