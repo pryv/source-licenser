@@ -8,13 +8,13 @@
     "Licenser",
     "License"
   ],
-  "homepage": "https://github.com/pryv/app-node-licenser#readme",
+  "homepage": "https://github.com/pryv/source-licenser#readme",
   "bugs": {
-    "url": "https://github.com/pryv/app-node-licenser/issues"
+    "url": "https://github.com/pryv/source-licenser/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pryv/app-node-licenser.git"
+    "url": "git+https://github.com/pryv/source-licenser.git"
   },
   "license": "BSD-3-Clause",
   "author": "Pryv S.A <info@pryv.com> (https://pryv.com)",

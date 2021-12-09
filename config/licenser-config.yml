@@ -3,7 +3,7 @@ templating: ## Add your own values they will be replaced in fileSpecs and sourc
   AUTHOR_EMAIL: info@pryv.com
   AUTHOR_WEB: https://pryv.com
   DESCRIPTION: "Add license information to sourcefiles."
-  HOMEPAGE: https://github.com/pryv/app-node-licenser
+  HOMEPAGE: https://github.com/pryv/source-licenser
   SPDX: BSD-3-Clause
 
 license:
@@ -12,9 +12,8 @@ license:
     end: CURRENT_YEAR
 
 fileSpecs:
-  package.json: # For package.json 
+  package.json: # For package.json
     json:
       force:  # Following fields will be replaced anyway
         public: true
         private: false
-  
