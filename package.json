@@ -23,7 +23,9 @@
     "source-licenser": "bin/source-licenser"
   },
   "scripts": {
-    "licenseme": "./bin/source-licenser ./config/licenser-config.yml ./config/LICENSE.src ./"
+    "licenseme": "./bin/source-licenser ./config/licenser-config.yml ./config/LICENSE.src ./",
+    "test": "mocha",
+    "test-cover": "nyc npm run test"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
@@ -33,5 +35,11 @@
     "prepend-file": "^2.0.0",
     "sort-package-json": "^1.49.0"
   },
-  "public": true
+  "devDependencies": {
+    "fs-extra": "^10.0.1",
+    "mocha": "^9.2.2",
+    "nixt": "^0.5.1",
+    "nyc": "^15.1.0",
+    "tmp-promise": "^3.0.3"
+  }
 }
