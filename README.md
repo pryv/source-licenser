@@ -20,7 +20,7 @@ How it works:
      */
     ```
 
-  - `addTrailer`: Add license text at the end of the file. Comment characters can be defined.
+  - `footer`: Add license text at the end of the file. Comment characters can be defined.
   - `addSibling`: Add a `LICENSE` text file at the same level as the matching file.
   - `json`: Add or complete fields of json files. (Ex: package.json)
 
@@ -53,15 +53,15 @@ Actions are specified in the `fileSpecs` configuration object. Each time a file 
 Prepend the license content to all files matching a spec. Settings:
 
 - `startBlock`: The starting line of the license block (used to determine if a file already has a license)
-- `lineBlock`: Will replace all lines return '\n' of LICENSE file
+- `linePrefix`: Will replace all lines return '\n' of LICENSE file
 - `endBlock`: The end of the license block. Used to determine the end of the existing license.
 
-#### `addTrailer`
+#### `footer`
 
 Append the license content to all files matching a spec. Settings:
 
 - `startBlock`: The starting line of the license block (used to determine if a file already has a license)
-- `lineBlock`: Will replace all lines return '\n' of LICENSE file
+- `linePrefix`: Will replace all lines return '\n' of LICENSE file
 - `endBlock`: The end of the license block.
 
 #### `addSibling`

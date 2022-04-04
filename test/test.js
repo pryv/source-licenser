@@ -4,6 +4,7 @@ const fse = require('fs-extra');
 const path = require('path');
 const tmp = require('tmp-promise');
 const assert = require('assert');
+const exp = require('constants');
 
 const bin = './bin/source-licenser';
 
@@ -23,18 +24,27 @@ describe('source-licenser', async () => {
         .code(0)
         .go();
 
-
+      checkResult('footer-none.md');
+      checkResult('footer-existing.md');
     });
 
     after(async () => {
       sourceDir.cleanup();
     });
 
+    function checkResult(sourceFileName, description) {
+      const actual = fileContents(path.join(sourceDir.path, sourceFileName));
+      const expected = fileContents(path.join(fixture('expected-results'), sourceFileName));
+      // DEBUG, TODO: remove
+      console.log("\nACTUAL:\n=======\n" + actual);
+      console.log("\nEXPECTED:\n=========\n" + expected);
+      assert.equal(actual, expected);
+    }
+
     /**
-     * Returns the full (temp copy) source file name.
-     * To be used in tests only.
+     * @returns The full (temp copy) source file name.
      */
-    function sourceFile (name) {
+     function sourceFile (name) {
       return path.join(sourceDir.path, name);
     }
   });
@@ -53,15 +63,22 @@ describe('source-licenser', async () => {
 /**
  * nixt wrapper: cwd() is setup and go() returns a promisified end().
  */
- function cli () {
+function cli () {
   const n = nixt();
   n.go = util.promisify(n.end);
   return n.cwd(path.join(__dirname, '/..'));
 }
 
 /**
- * Returns the full (original) fixture filename.
+ * @returns The full (original) fixture filename.
  */
- function fixture (name) {
+function fixture (name) {
   return path.join(__dirname, '../test/fixtures', name);
+}
+
+/**
+ * @returns The file’s contents.
+ */
+function fileContents (path) {
+  return fse.readFileSync(path, 'utf8');
 }

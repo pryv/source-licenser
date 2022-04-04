@@ -37,7 +37,7 @@ const path = require('path');
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 const config = require('./load-config');
 
-const applyTemplate = require('./replaceVariables');
+const applyTemplate = require('./substituteVariables');
 
 
 let ignores, fileSpecs, specKeys, license;
@@ -53,7 +53,7 @@ async function start() {
   await loadAction(require('./actions/addHeader'));
   await loadAction(require('./actions/json'));
   await loadAction(require('./actions/addSibling'));
-  await loadAction(require('./actions/addTrailer'));
+  await loadAction(require('./actions/footer'));
   checkInit();
   await loop(config.get('src'));
 }
@@ -67,7 +67,7 @@ async function loadAction(action) {
   // -- prepare actions
   for (const specKey of specKeys) { // for each type of file "*.js", "README.md", ....
     fileSpec = fileSpecs[specKey];
-    for (const actionKey of Object.keys(fileSpec)) { // for each found action "addTrailer", "json", ....
+    for (const actionKey of Object.keys(fileSpec)) { // for each found action ("footer", "json", ...)
       if (actionKey === action.key) {
         console.log('Loading: ' + action.key + ' for ' + specKey);
         if (typeof fileSpec[actionKey] === 'boolean' && fileSpec[actionKey]) {

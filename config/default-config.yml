@@ -5,8 +5,7 @@ ignores: # If found in path contained elements will be ignored
 - ".git"
 
 fileSpecs:
-
-  package.json: # For package.json 
+  package.json:
     json:
       force:  # Following fields will be replaced anyway
         author: "{AUTHOR_NAME} <{AUTHOR_EMAIL}> ({AUTHOR_WEB})"
@@ -15,28 +14,27 @@ fileSpecs:
       defaults: # Following fields will be replaced if not present
         homepage: "{HOMEPAGE}"
         description: "{DESCRIPTION}"
-      sortPackage: true # Nice ordering of packge items 
+      sortPackage: true # Nice ordering of packge items
 
     addSibling: true # Add a LICENSE file in the same directory than package.json
 
-  ".js": # All Javascript source code file
+  # All JavaScript files
+  .js:
     addHeader:
-      startBlock: >- 
+      startBlock: >-
         /**
          * @license
-      lineBlock: " * "
+      linePrefix: " * "
       endSearch: "*/\n" # only used to detect enf od license block.
       endBlock: "\n */\n"
 
-  README.md: # All README.md files
-    addTrailer:
-      action: addTrailer
-      startBlock: "# License"
-      lineBlock: ''
-      endBlock: ''
- 
-templating:
+  # README.md files
+  README.md:
+    footer:
+      startBlock: "\n# License\n"
+      linePrefix: ""
+      endBlock: ""
+
+variables:
 
 license:
-
-
