@@ -31,46 +31,12 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const fs = require('fs');
-const prepend = require('prepend-file');
+const fs = require('fs/promises');
+const helpers = require('../helpers');
 
-/**
- * Check the firts "n" bytes of a file to see if it matches the startBlock
- * If yes clean the file up to the end
- * @param {string} fullPath
- * @param {Object} spec
- * @returns {boolean} if true license should be added, is false, skip
- */
-async function checkFileHeaderAndClean(fullPath, spec) {
-  const fd = fs.openSync(fullPath, 'r');
-  const buffer = Buffer.alloc(spec.startBlockLength);
-  fs.readSync(fd, buffer, 0, spec.startBlockLength, 0);
-  //console.log(buffer, buffer.toString('utf-8'), spec.startBlockLength);
-  fs.closeSync(fd);
-  if (!buffer.equals(spec.startBlockBuffer)) return true; // does not match return
-  // startBlock found read all file and rewrite without startBlock
-  const fileContent = fs.readFileSync(fullPath, 'utf8');
-  const endBlockPos = fileContent.indexOf(spec.endSearch);
-
-  // check if content is already having correct license text
-
-  const actualContent = fileContent.substr(0, endBlockPos + spec.endSearch.length);
-  if (actualContent === spec.license) return false; // skip
-
-  fs.writeFileSync(fullPath, fileContent.substr(endBlockPos + spec.endSearch.length));
-  return true;
-}
-
-/**
- * Perform the action on this file with this spec
- */
-async function action(fullPath, spec) {
-  const addLicense = await checkFileHeaderAndClean(fullPath, spec);
-  if (addLicense) {
-    prepend.sync(fullPath, spec.license);
-    return true;
-  }
-  return false;
+module.exports = {
+  prepare,
+  key: 'header'
 }
 
 /**
@@ -80,20 +46,42 @@ async function action(fullPath, spec) {
  * @param {Object} fileSpecs
  * @param {String} license - content of the license
  */
-async function prepare(spec, license) {
-  spec.startBlockBuffer = Buffer.from(spec.startBlock, 'utf-8'); // save startBlock as Buffer for fast check
-  spec.startBlockLength = spec.startBlockBuffer.length;
-  let myLicense = '' + license;
-  if (spec.linePrefix !== '') {
-    myLicense = myLicense.split('\n').join('\n' + spec.linePrefix)
-  }
-  spec.license = spec.startBlock + myLicense + spec.endBlock; // prepare license block
+ async function prepare(spec, license) {
+  spec.licenseText = license;
+  const compiledSpec = helpers.prepareBlocks(spec)
   spec.actionMethod = async function (fullPath) {
-    return await action(fullPath, spec);
+    return await checkFileAndClean(fullPath, compiledSpec);
   };
 }
 
-module.exports = {
-  prepare: prepare,
-  key: 'addHeader'
+/**
+ * Checks the file’s header and updates it if needed.
+ * @param {string} filePath
+ * @param {Object} compiledSpec
+ * @returns {boolean} `true` if the file was modified
+ */
+async function checkFileAndClean(filePath, compiledSpec) {
+  const originalContent = await fs.readFile(filePath, 'utf8');
+  let contentBefore,
+      contentAfter;
+  const startBlockIndex = originalContent.indexOf(compiledSpec.startBlock);
+  const endBlockIndex = originalContent.indexOf(compiledSpec.endBlock, startBlockIndex + compiledSpec.startBlock.length);
+  if (startBlockIndex >= 0) {
+    // existing header
+    const originalLicenseBlock = originalContent.substring(startBlockIndex, endBlockIndex + compiledSpec.endBlock.length);
+    if (originalLicenseBlock === compiledSpec.fullLicenseBlock) {
+      // up-to-date: skip
+      return false;
+    } else {
+      // outdated: update
+      contentBefore = originalContent.substring(0, startBlockIndex);
+      contentAfter = originalContent.substring(endBlockIndex + compiledSpec.endBlock.length);
+    }
+  } else {
+    // no header yet
+    contentBefore = '';
+    contentAfter = originalContent;
+  }
+  await fs.writeFile(filePath, contentBefore + compiledSpec.fullLicenseBlock + contentAfter);
+  return true;
 }

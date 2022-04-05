@@ -19,13 +19,17 @@ describe('source-licenser', async () => {
 
     it('should add license info as configured', async () => {
       await cli()
-        .run(`${bin} ${fixture('config/test-config.yml')} ${fixture('config/LICENSE.src')} ${sourceDir.path}`)
+        .run(`${bin} --config ${fixture('config/test-config.yml')} ${sourceDir.path}`)
         .stderr('')
         .code(0)
         .go();
 
+      checkResult('header-none.js');
+      checkResult('header-existing.js');
       checkResult('footer-none.md');
       checkResult('footer-existing.md');
+      checkResult('package.json');
+      checkResult('LICENSE');
     });
 
     after(async () => {

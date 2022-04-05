@@ -18,18 +18,17 @@ fileSpecs:
 
   # All JavaScript files
   .js:
-    addHeader:
-      startBlock: >-
+    header:
+      startBlock: |
         /**
          * @license
       linePrefix: " * "
-      endSearch: "*/\n" # only used to detect enf od license block.
-      endBlock: "\n */\n"
+      endBlock: " */"
 
   # All Markdown files
   .md:
     footer:
-      startBlock: "\n# License\n"
+      startBlock: "\n# License\n\n"
       linePrefix: ""
       endBlock: ""
 
@@ -45,3 +44,9 @@ license:
   year:
     start: 2020
     end: CURRENT_YEAR
+  text: |
+    Copyright (c) 2022 {AUTHOR_NAME} {AUTHOR_WEB}
+
+    [Legalese prose]
+
+    SPDX-License-Identifier: {SPDX}

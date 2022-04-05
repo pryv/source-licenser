@@ -10,7 +10,7 @@ How it works:
 
 - Actions are defined per fileTypes ex: `.js` , `README.md`, `package.json`.
 - As per v1.0, actions can be:
-  - `addHeader`:  Add license text at the beginning of the file. Comment characters can be defined.
+  - `header`:  Add license text at the beginning of the file. Comment characters can be defined.
 
     ​	Example: for `.js` file add
 
@@ -48,7 +48,7 @@ Example: `source-licenser ./config/licenser-config.yml ./config/LICENSE.src ./`
 
 Actions are specified in the `fileSpecs` configuration object. Each time a file matches a specification, all actions defined therein will be applied.
 
-#### `addHeader`
+#### `header`
 
 Prepend the license content to all files matching a spec. Settings:
 

@@ -32,59 +32,34 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-/**
- * Add license at the END of the file
- *
- * WARNING: Replaces everything after the license 'startBlock'
- */
+const nconf = require('nconf');
+const path = require('path');
+const yaml = require('js-yaml');
 
-const fs = require('fs/promises');
-const helpers = require('../helpers');
+module.exports = loadConfig;
 
-module.exports = {
-  prepare,
-  key: 'footer'
-}
+function loadConfig (configFilePath) {
+  nconf.argv().env();
+  loadFile('local', configFilePath);
+  return nconf.get();
 
-/**
- * Eventually prepare fileSpecs (can be called multiple times)
- * Add actionMethod function to be called on each matched file
- *
- * @param {Object} spec
- * @param {String} license Rendered license text
- */
- async function prepare(spec, license) {
-  spec.licenseText = license;
-  const compiledSpec = helpers.prepareBlocks(spec)
-  spec.actionMethod = async function (filePath) {
-    return await checkFileAndClean(filePath, compiledSpec);
-  };
-}
-
-/**
- * Checks the file’s footer and updates it if needed.
- * @param {string} filePath
- * @param {Object} compiledSpec
- * @returns {boolean} `true` if the file was modified
- */
-async function checkFileAndClean(filePath, compiledSpec) {
-  const originalContent = await fs.readFile(filePath, 'utf8');
-  let contentBefore;
-  const startBlockIndex = originalContent.lastIndexOf(compiledSpec.startBlock);
-  if (startBlockIndex >= 0) {
-    // existing footer
-    const originalLicenseBlock = originalContent.substring(startBlockIndex);
-    if (originalLicenseBlock === compiledSpec.fullLicenseBlock) {
-      // up-to-date: skip
-      return false;
+  function loadFile(scope, filePath) {
+    const ext = path.extname(filePath);
+    if (ext === '.js') {
+      nconf.use(scope, {
+        type: 'literal',
+        store: require(filePath)
+      });
     } else {
-      // outdated: update
-      contentBefore = originalContent.substring(0, startBlockIndex);
+      // i.e. JSON or YAML
+      const options = { file: filePath };
+      if (ext === '.yml' || ext === '.yaml') {
+        options.format = {
+          parse: yaml.load,
+          stringify: yaml.dump
+        };
+      }
+      nconf.file(scope, options);
     }
-  } else {
-    // no footer yet
-    contentBefore = originalContent;
   }
-  await fs.writeFile(filePath, contentBefore + compiledSpec.fullLicenseBlock);
-  return true;
 }

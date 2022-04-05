@@ -20,12 +20,11 @@ fileSpecs:
 
   # All JavaScript files
   .js:
-    addHeader:
+    header:
       startBlock: >-
         /**
          * @license
       linePrefix: " * "
-      endSearch: "*/\n" # only used to detect enf od license block.
       endBlock: "\n */\n"
 
   # README.md files

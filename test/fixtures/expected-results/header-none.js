@@ -7,6 +7,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 module.exports = {
-  'Heaven and earth': 'begin in the unnamed:',
-  'name’s the mother': 'of the ten thousand things.'
+  'The way you can go': 'isn’t the real way.',
+  'The name you can say': 'isn’t the real name.'
 };

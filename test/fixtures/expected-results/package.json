@@ -1,0 +1,9 @@
+{
+  "name": "test",
+  "version": "1",
+  "private": true,
+  "description": "Do not replace me.",
+  "homepage": "https://tao-te-ching.mysteries",
+  "license": "BSD-3-Clause",
+  "author": "Lao Tzu <tzu@hidden.mysteries> (https://hidden.mysteries)"
+}
