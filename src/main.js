@@ -31,7 +31,7 @@ if (!fs.existsSync(targetDirPath) || !fs.lstatSync(targetDirPath).isDirectory())
 }
 
 const config = loadConfig(configFilePath);
-const ignores = config.ignores;
+const ignore = config.ignore;
 const fileSpecs = config.fileSpecs;
 const specKeys = Object.keys(fileSpecs);
 
@@ -136,7 +136,7 @@ function checkInit() {
   const files = await fs.promises.readdir(dir);
   for (const file of files) {
     const fullPath = path.resolve(dir, file);
-    if (ignore(fullPath)) continue;
+    if (isIgnored(fullPath)) continue;
     const stat = await fs.promises.stat(fullPath);
     if (stat.isDirectory()) {
       await loop(fullPath); // recurse
@@ -166,8 +166,8 @@ function checkInit() {
  * Return true is this file or directory should be ignored
  * @param {String} fullPath
  */
-function ignore(fullPath) {
-  for (const i of ignores) {
+function isIgnored(fullPath) {
+  for (const i of ignore) {
     if (fullPath.indexOf(i) >= 0) return true;
   }
   return false;

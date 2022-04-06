@@ -63,6 +63,12 @@ describe('source-licenser', async () => {
       it('should leave an existing license file untouched if up-to-date');
     });
 
+    describe(`'ignore'`, async () => {
+      it(`should leave specified files untouched even if they match patterns in 'files'`, async () => {
+        checkResult('ignore-me/some-module.js');
+      });
+    });
+
     function checkResult(sourceFileName, description) {
       const expected = fileContents(path.join(fixture('expected-results'), sourceFileName));
       const actual = fileContents(path.join(sourceDir.path, sourceFileName));

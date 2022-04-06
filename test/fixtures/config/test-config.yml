@@ -1,6 +1,5 @@
-ignores:
-- node_modules
-- .git
+ignore:
+- ignore-me
 
 fileSpecs:
   package.json:
