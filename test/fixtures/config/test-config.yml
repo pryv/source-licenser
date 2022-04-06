@@ -14,7 +14,7 @@ fileSpecs:
         description: "{DESCRIPTION}"
       sortPackage: true
 
-    addSibling: true
+    siblingLicenseFile: true
 
   # All JavaScript files
   .js:
@@ -32,14 +32,6 @@ fileSpecs:
       linePrefix: ""
       endBlock: ""
 
-variables:
-  AUTHOR_NAME: Lao Tzu
-  AUTHOR_EMAIL: tzu@hidden.mysteries
-  AUTHOR_WEB: https://hidden.mysteries
-  DESCRIPTION: I know the good in not doing.
-  HOMEPAGE: https://tao-te-ching.mysteries
-  SPDX: BSD-3-Clause
-
 license:
   year:
     start: 2020
@@ -50,3 +42,11 @@ license:
     [Legalese prose]
 
     SPDX-License-Identifier: {SPDX}
+
+variables:
+  AUTHOR_NAME: Lao Tzu
+  AUTHOR_EMAIL: tzu@hidden.mysteries
+  AUTHOR_WEB: https://hidden.mysteries
+  DESCRIPTION: I know the good in not doing.
+  HOMEPAGE: https://tao-te-ching.mysteries
+  SPDX: BSD-3-Clause

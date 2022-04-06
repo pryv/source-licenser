@@ -16,7 +16,7 @@ fileSpecs:
         description: "{DESCRIPTION}"
       sortPackage: true # Nice ordering of packge items
 
-    addSibling: true # Add a LICENSE file in the same directory than package.json
+    siblingLicenseFile: true # Add a LICENSE file in the same directory than package.json
 
   # All JavaScript files
   .js:

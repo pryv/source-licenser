@@ -44,7 +44,7 @@ const startTime = Date.now();
 
   await loadAction(require('./actions/header'));
   await loadAction(require('./actions/json'));
-  await loadAction(require('./actions/addSibling'));
+  await loadAction(require('./actions/siblingLicenseFile'));
   await loadAction(require('./actions/footer'));
 
   checkInit();

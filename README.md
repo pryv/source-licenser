@@ -21,7 +21,7 @@ How it works:
     ```
 
   - `footer`: Add license text at the end of the file. Comment characters can be defined.
-  - `addSibling`: Add a `LICENSE` text file at the same level as the matching file.
+  - `siblingLicenseFile`: Add a `LICENSE` text file at the same level as the matching file.
   - `json`: Add or complete fields of json files. (Ex: package.json)
 
 
@@ -64,7 +64,7 @@ Append the license content to all files matching a spec. Settings:
 - `linePrefix`: Will replace all lines return '\n' of LICENSE file
 - `endBlock`: The end of the license block.
 
-#### `addSibling`
+#### `siblingLicenseFile`
 
 Add a "LICENSE" file at the same level as the matching file
 
