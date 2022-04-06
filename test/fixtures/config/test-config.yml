@@ -1,6 +1,3 @@
-ignore:
-- ignore-me
-
 fileSpecs:
   package.json:
     json:
@@ -31,18 +28,20 @@ fileSpecs:
       linePrefix: ""
       endBlock: ""
 
-license:
-  year:
+ignore:
+- ignore-me
+
+license: |
+  Copyright (c) 2022 {AUTHOR_NAME} {AUTHOR_WEB}
+
+  [Legalese prose]
+
+  SPDX-License-Identifier: {SPDX}
+
+substitutions:
+  YEARS:
     start: 2020
     end: CURRENT_YEAR
-  text: |
-    Copyright (c) 2022 {AUTHOR_NAME} {AUTHOR_WEB}
-
-    [Legalese prose]
-
-    SPDX-License-Identifier: {SPDX}
-
-variables:
   AUTHOR_NAME: Lao Tzu
   AUTHOR_EMAIL: tzu@hidden.mysteries
   AUTHOR_WEB: https://hidden.mysteries

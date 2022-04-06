@@ -11,7 +11,7 @@ const argv = yargs(hideBin(process.argv))
   .demandOption('c', 'You must specify the configuration file')
   .demandCommand(1, 'You must specify the target directory')
   .option('c', {
-    alias: 'config',
+    alias: 'config-file',
     describe: 'Configuration file',
     nargs: 1
   })
@@ -21,7 +21,7 @@ const argv = yargs(hideBin(process.argv))
 
 // validate params
 
-const configFilePath = path.resolve(argv.config);
+const configFilePath = path.resolve(argv.configFile);
 if (!fs.existsSync(configFilePath)) {
   exitWithError(`Config file '${argv.config}' not found`);
 }
@@ -40,7 +40,7 @@ let updated = 0;
 const startTime = Date.now();
 
 (async () => {
-  await substituteVariables();
+  await applySubstitutions();
 
   await loadAction(require('./actions/header'));
   await loadAction(require('./actions/json'));
@@ -55,9 +55,9 @@ const startTime = Date.now();
 
 // details
 
-async function substituteVariables() {
+async function applySubstitutions() {
   // -- get YEARS values TODO clean that up
-  const years = config.license.year;
+  const years = config.substitutions.YEARS;
   const now = new Date();
 
   if (! years.start || years.start === 'CURRENT_YEAR') years.start = now.getFullYear();
@@ -66,13 +66,13 @@ async function substituteVariables() {
   if (years.start !== years.end) {
     YEARS = years.start + '-' + years.end;
   }
-  config.variables.YEARS = YEARS;
+  config.substitutions.YEARS = YEARS;
 
-  const variables = config.variables;
+  const substitutions = config.substitutions;
 
   // -- apply template on LICENSE TEXT
   _.templateSettings.interpolate = /{([A-Z_]+)}/g;
-  config.license.text = _.template(config.license.text)(variables);
+  config.license = _.template(config.license)(substitutions);
 
   // -- apply template on strings founds in fileSpecs
   substituteInStringValues(config, 'fileSpecs');
@@ -82,7 +82,7 @@ async function substituteVariables() {
       return;
     }
     if (typeof val === 'string') {
-      obj[key] = _.template(val)(variables);
+      obj[key] = _.template(val)(substitutions);
       return;
     }
     if (typeof val === 'object') {
@@ -106,7 +106,7 @@ async function loadAction(action) {
         if (typeof fileSpec[actionKey] === 'boolean' && fileSpec[actionKey]) {
           fileSpec[actionKey] = {};
         }
-        await action.prepare(fileSpec[actionKey], config.license.text);
+        await action.prepare(fileSpec[actionKey], config.license);
         console.log(`Prepared '${action.key}' for '${specKey}'`);
       }
     }

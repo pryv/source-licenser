@@ -9,7 +9,7 @@ Add license information to source files:
 How it works:
 
 - Actions are defined per fileTypes ex: `.js` , `README.md`, `package.json`.
-- As per v1.0, actions can be:
+- Actions can be:
   - `header`:  Add license text at the beginning of the file. Comment characters can be defined.
 
     ​	Example: for `.js` file add
@@ -21,30 +21,29 @@ How it works:
     ```
 
   - `footer`: Add license text at the end of the file. Comment characters can be defined.
-  - `siblingLicenseFile`: Add a `LICENSE` text file at the same level as the matching file.
   - `json`: Add or complete fields of json files. (Ex: package.json)
+  - `siblingLicenseFile`: Add a `LICENSE` text file at the same level as the matching file.
 
 
 ## Usage
 
 ### Install
 
-`npm install source-licenser -g`
+`npm install source-licenser [-g]`
 
 ### Setup
 
-1. Get a source license file `<license-txt-file>`, for example: `config/LICENSE.src`
-2. Copy `config/license-config.yml` and edit as per your needs (check `default-config` for inspiration)
+Define a configuration file as per your needs (see below). You can also use `config/licenser-config.yml` as inspiration.
 
 ### Run
 
-`source-licenser <config.yml> <license-txt-file> <directory> `
+`source-licenser --config-file <config.yml> <directory> `
 
-Example: `source-licenser ./config/licenser-config.yml ./config/LICENSE.src ./`
+Example: `source-licenser --config-file ./config/licenser-config.yml ./`
 
 ### Configuration file
 
-### Actions
+### `fileSpecs`
 
 Actions are specified in the `fileSpecs` configuration object. Each time a file matches a specification, all actions defined therein will be applied.
 
@@ -66,7 +65,7 @@ Append the license content to all files matching a spec. Settings:
 
 #### `siblingLicenseFile`
 
-Add a "LICENSE" file at the same level as the matching file
+Add a "LICENSE" file at the same level as the matching file.
 
 #### `json`
 
@@ -75,6 +74,18 @@ Update a JSON field (mainly used for `package.json`). Settings:
 - `force`: Override fields by the specified values
 - `defaults`: Update fields if not defined
 - `sortPackage`: `true` or `false`. Order the fields as per `package.json`
+
+### `ignore`
+
+List file patterns to be ignored.
+
+### `license`
+
+The license text.
+
+### `substitutions`
+
+Define values that can be used in `license` or `json` properties with the format `{NAME}`.
 
 
 ## License

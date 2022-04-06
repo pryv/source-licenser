@@ -18,7 +18,7 @@ describe('source-licenser', async () => {
       fse.copy(fixture('source'), sourceDir.path);
 
       await cli()
-        .run(`${bin} --config ${fixture('config/test-config.yml')} ${sourceDir.path}`)
+        .run(`${bin} --config-file ${fixture('config/test-config.yml')} ${sourceDir.path}`)
         .stderr('')
         .code(0)
         .go();
