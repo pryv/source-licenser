@@ -7,6 +7,7 @@ const assert = require('assert');
 const exp = require('constants');
 
 const bin = './bin/source-licenser';
+tmp.setGracefulCleanup();
 
 describe('source-licenser', async () => {
   describe('when run with a valid config file and target source directory', async () => {
@@ -15,33 +16,56 @@ describe('source-licenser', async () => {
     before(async () => {
       sourceDir = await tmp.dir();
       fse.copy(fixture('source'), sourceDir.path);
-    });
 
-    it('should add license info as configured', async () => {
       await cli()
         .run(`${bin} --config ${fixture('config/test-config.yml')} ${sourceDir.path}`)
         .stderr('')
         .code(0)
         .go();
-
-      checkResult('header-none.js');
-      checkResult('header-existing.js');
-      checkResult('footer-none.md');
-      checkResult('footer-existing.md');
-      checkResult('package.json');
-      checkResult('LICENSE');
     });
 
     after(async () => {
       sourceDir.cleanup();
     });
 
+    describe(`'header'`, async () => {
+      it('should add a header if missing', async () => {
+        checkResult('header-none.js');
+      });
+
+      it('should leave files untouched if up-to-date', async () => {
+        checkResult('header-existing.js');
+      });
+    });
+
+    describe(`'footer'`, async () => {
+      it('should add a footer if missing', async () => {
+        checkResult('footer-none.md');
+      });
+
+      it('should leave files untouched if up-to-date', async () => {
+        checkResult('footer-existing.md');
+      });
+    });
+
+    describe(`'json'`, async () => {
+      // TODO: consider splitting into details
+      it('should set JSON properties as configured', async () => {
+        checkResult('package.json');
+      });
+    });
+
+    describe(`'siblingLicenseFile'`, async () => {
+      it('should add a license file as configured if missing', async () => {
+        checkResult('LICENSE');
+      });
+
+      it('should leave an existing license file untouched if up-to-date');
+    });
+
     function checkResult(sourceFileName, description) {
-      const actual = fileContents(path.join(sourceDir.path, sourceFileName));
       const expected = fileContents(path.join(fixture('expected-results'), sourceFileName));
-      // DEBUG, TODO: remove
-      console.log("\nACTUAL:\n=======\n" + actual);
-      console.log("\nEXPECTED:\n=========\n" + expected);
+      const actual = fileContents(path.join(sourceDir.path, sourceFileName));
       assert.equal(actual, expected);
     }
 
