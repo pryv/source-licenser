@@ -19,7 +19,7 @@ const argv = yargs(hideBin(process.argv))
   .alias('v', 'version')
   .argv;
 
-// validate params
+// make sure specified files exist
 
 const configFilePath = path.resolve(argv.configFile);
 if (!fs.existsSync(configFilePath)) {
@@ -55,14 +55,14 @@ const startTime = Date.now();
 
 // details
 
-async function applySubstitutions() {
+async function applySubstitutions () {
   // -- get YEARS values TODO clean that up
   const years = config.substitutions.YEARS;
   const now = new Date();
 
-  if (! years.start || years.start === 'CURRENT_YEAR') years.start = now.getFullYear();
+  if (!years.start || years.start === 'CURRENT_YEAR') years.start = now.getFullYear();
   let YEARS = years.start;
-  if (! years.end || years.end === 'CURRENT_YEAR') years.end = now.getFullYear();
+  if (!years.end || years.end === 'CURRENT_YEAR') years.end = now.getFullYear();
   if (years.start !== years.end) {
     YEARS = years.start + '–' + years.end;
   }
@@ -76,7 +76,7 @@ async function applySubstitutions() {
 
   // -- apply template on strings founds in files
   substituteInStringValues(config, 'files');
-  function substituteInStringValues(obj, key) {
+  function substituteInStringValues (obj, key) {
     const val = obj[key];
     if (!val) {
       return;
@@ -90,17 +90,17 @@ async function applySubstitutions() {
         // not handled
         return;
       }
-      for (let k of Object.keys(val)) {
+      for (const k of Object.keys(val)) {
         substituteInStringValues(val, k);
       }
     }
   }
 }
 
-async function loadAction(action) {
+async function loadAction (action) {
   // -- prepare actions
   for (const specKey of filesKeys) { // for each type of file "*.js", "README.md", ....
-    fileSpec = files[specKey];
+    const fileSpec = files[specKey];
     for (const actionKey of Object.keys(fileSpec)) { // for each found action ("footer", "json", ...)
       if (actionKey === action.key) {
         if (typeof fileSpec[actionKey] === 'boolean' && fileSpec[actionKey]) {
@@ -113,7 +113,7 @@ async function loadAction(action) {
   }
 }
 
-function checkInit() {
+function checkInit () {
   for (const specKey of filesKeys) {
     for (const actionKey of Object.keys(files[specKey])) {
       const actionItem = files[specKey][actionKey];
@@ -131,8 +131,8 @@ function checkInit() {
  * - call handleMatchingFile each time a file matching a fileSpec is found
  * @param {String} dir
  */
- async function loop(dir) {
-  //console.log('>' + dir);
+async function loop (dir) {
+  // console.log('>' + dir);
   const files = await fs.promises.readdir(dir);
   for (const file of files) {
     const fullPath = path.resolve(dir, file);
@@ -154,7 +154,7 @@ function checkInit() {
  * Helper to find the corresponding specs for a file
  * @param {String} fullPath
  */
- function getFileSpec(fullPath) {
+function getFileSpec (fullPath) {
   for (const specKey of filesKeys) {
     if (fullPath.endsWith(specKey)) {
       return files[specKey];
@@ -166,7 +166,7 @@ function checkInit() {
  * Return true is this file or directory should be ignored
  * @param {String} fullPath
  */
-function isIgnored(fullPath) {
+function isIgnored (fullPath) {
   for (const i of ignore) {
     if (fullPath.indexOf(i) >= 0) return true;
   }
@@ -178,14 +178,14 @@ function isIgnored(fullPath) {
  * @param {String} fullPath a file Path
  * @param {Object} spec the Specifications from files matching this file
  */
-async function handleMatchingFile(fullPath, spec) {
+async function handleMatchingFile (fullPath, spec) {
   let updatedFile = false;
   for (const actionItemKey of Object.keys(spec)) {
     const actionItem = spec[actionItemKey];
     const res = await actionItem.actionMethod(fullPath);
-    if (res) { 
+    if (res) {
       updatedFile = true;
-      console.log(actionItemKey +' >>> ' + fullPath);
+      console.log(actionItemKey + ' >>> ' + fullPath);
     }
   }
   if (updatedFile) {

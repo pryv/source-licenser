@@ -4,10 +4,10 @@ const fse = require('fs-extra');
 const path = require('path');
 const tmp = require('tmp-promise');
 const assert = require('assert');
-const exp = require('constants');
 
 const bin = './bin/source-licenser';
-tmp.setGracefulCleanup();
+
+/* global describe, before, after, it */
 
 describe('source-licenser', async () => {
   describe('when run with a valid config file and target source directory', async () => {
@@ -28,7 +28,7 @@ describe('source-licenser', async () => {
       sourceDir.cleanup();
     });
 
-    describe(`'header'`, async () => {
+    describe('"header"', async () => {
       it('should add a header if missing', async () => {
         checkResult('header-none.js');
       });
@@ -38,7 +38,7 @@ describe('source-licenser', async () => {
       });
     });
 
-    describe(`'footer'`, async () => {
+    describe('"footer"', async () => {
       it('should add a footer if missing', async () => {
         checkResult('footer-none.md');
       });
@@ -48,14 +48,14 @@ describe('source-licenser', async () => {
       });
     });
 
-    describe(`'json'`, async () => {
+    describe('"json"', async () => {
       // TODO: consider splitting into details
       it('should set JSON properties as configured', async () => {
         checkResult('package.json');
       });
     });
 
-    describe(`'siblingLicenseFile'`, async () => {
+    describe('"siblingLicenseFile"', async () => {
       it('should add a license file as configured if missing', async () => {
         checkResult('LICENSE');
       });
@@ -63,23 +63,16 @@ describe('source-licenser', async () => {
       it('should leave an existing license file untouched if up-to-date');
     });
 
-    describe(`'ignore'`, async () => {
-      it(`should leave specified files untouched even if they match patterns in 'files'`, async () => {
+    describe('"ignore"', async () => {
+      it('should leave specified files untouched even if they match patterns in "files"', async () => {
         checkResult('ignore-me/some-module.js');
       });
     });
 
-    function checkResult(sourceFileName, description) {
+    function checkResult (sourceFileName, description) {
       const expected = fileContents(path.join(fixture('expected-results'), sourceFileName));
       const actual = fileContents(path.join(sourceDir.path, sourceFileName));
       assert.equal(actual, expected);
-    }
-
-    /**
-     * @returns The full (temp copy) source file name.
-     */
-     function sourceFile (name) {
-      return path.join(sourceDir.path, name);
     }
   });
 

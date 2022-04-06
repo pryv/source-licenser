@@ -44,7 +44,7 @@ const helpers = require('../helpers');
 module.exports = {
   prepare,
   key: 'footer'
-}
+};
 
 /**
  * Eventually prepare fileSpecs (can be called multiple times)
@@ -53,9 +53,9 @@ module.exports = {
  * @param {Object} spec
  * @param {String} license Rendered license text
  */
- async function prepare(spec, license) {
+async function prepare (spec, license) {
   spec.licenseText = license;
-  const compiledSpec = helpers.prepareBlocks(spec)
+  const compiledSpec = helpers.prepareBlocks(spec);
   spec.actionMethod = async function (filePath) {
     return await checkFileAndClean(filePath, compiledSpec);
   };
@@ -67,7 +67,7 @@ module.exports = {
  * @param {Object} compiledSpec
  * @returns {boolean} `true` if the file was modified
  */
-async function checkFileAndClean(filePath, compiledSpec) {
+async function checkFileAndClean (filePath, compiledSpec) {
   const originalContent = await fs.readFile(filePath, 'utf8');
   let contentBefore;
   const startBlockIndex = originalContent.lastIndexOf(compiledSpec.startBlock);

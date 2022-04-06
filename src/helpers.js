@@ -26,24 +26,24 @@ function prepareBlocks (spec) {
   };
 }
 
-function getLines(s) {
+function getLines (s) {
   return s.split(/\r\n|\r|\n/);
 }
 
-function stripLastLineIfBlank(lines) {
+function stripLastLineIfBlank (lines) {
   if (lines[lines.length - 1].trimEnd() === '') {
     lines.pop();
   }
   return lines;
 }
 
-function ensureBlankLastLine(lines) {
+function ensureBlankLastLine (lines) {
   if (lines[lines.length - 1].trimEnd() !== '') {
     lines.push('');
   }
   return lines;
 }
 
-function join(lines) {
+function join (lines) {
   return lines.join(os.EOL);
 }

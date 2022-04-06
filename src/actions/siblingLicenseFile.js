@@ -37,6 +37,11 @@ const fs = require('fs');
 
 // add a LICENSE file in the same directory than the file
 
+module.exports = {
+  prepare: prepare,
+  key: 'siblingLicenseFile'
+};
+
 let licenseContent;
 
 /**
@@ -45,7 +50,7 @@ let licenseContent;
  * @param {String} license - content of the license
  * @return {Function} the action to apply;
  */
-async function prepare(spec, license) {
+async function prepare (spec, license) {
   licenseContent = license;
   spec.dummy = 'dummy';
   spec.actionMethod = async function (fullPath) {
@@ -57,10 +62,4 @@ async function prepare(spec, license) {
     fs.writeFileSync(licensePath, licenseContent);
     return true;
   };
-}
-
-
-module.exports = {
-  prepare: prepare,
-  key: 'siblingLicenseFile'
 }

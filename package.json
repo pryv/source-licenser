@@ -22,14 +22,13 @@
     "source-licenser": "bin/source-licenser"
   },
   "scripts": {
-    "licenseme": "./bin/source-licenser ./config/licenser-config.yml ./config/LICENSE.src ./",
-    "test": "mocha",
+    "license-me": "./bin/source-licenser ./config/licenser-config.yml ./",
+    "test": "semistandard && mocha",
     "test-cover": "nyc npm run test"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
-    "lodash.template": "^4.5.0",
     "nconf": "^0.11.2",
     "prepend-file": "^2.0.0",
     "sort-package-json": "^1.49.0",
@@ -40,6 +39,7 @@
     "mocha": "^9.2.2",
     "nixt": "^0.5.1",
     "nyc": "^15.1.0",
+    "semistandard": "^16.0.1",
     "tmp-promise": "^3.0.3"
   }
 }

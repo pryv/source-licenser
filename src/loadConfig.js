@@ -43,7 +43,7 @@ function loadConfig (configFilePath) {
   loadFile('local', configFilePath);
   return nconf.get();
 
-  function loadFile(scope, filePath) {
+  function loadFile (scope, filePath) {
     const ext = path.extname(filePath);
     if (ext === '.js') {
       nconf.use(scope, {
