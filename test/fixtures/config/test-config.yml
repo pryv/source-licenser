@@ -1,4 +1,4 @@
-fileSpecs:
+files:
   package.json:
     json:
       force:

@@ -43,9 +43,9 @@ Example: `source-licenser --config-file ./config/licenser-config.yml ./`
 
 ### Configuration file
 
-### `fileSpecs`
+### `files`
 
-Actions are specified in the `fileSpecs` configuration object. Each time a file matches a specification, all actions defined therein will be applied.
+Actions are specified in the `files` configuration object. Each time a file matches a specification, all actions defined therein will be applied.
 
 #### `header`
 

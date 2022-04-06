@@ -32,8 +32,8 @@ if (!fs.existsSync(targetDirPath) || !fs.lstatSync(targetDirPath).isDirectory())
 
 const config = loadConfig(configFilePath);
 const ignore = config.ignore;
-const fileSpecs = config.fileSpecs;
-const specKeys = Object.keys(fileSpecs);
+const files = config.files;
+const filesKeys = Object.keys(files);
 
 let count = 0;
 let updated = 0;
@@ -64,7 +64,7 @@ async function applySubstitutions() {
   let YEARS = years.start;
   if (! years.end || years.end === 'CURRENT_YEAR') years.end = now.getFullYear();
   if (years.start !== years.end) {
-    YEARS = years.start + '-' + years.end;
+    YEARS = years.start + '–' + years.end;
   }
   config.substitutions.YEARS = YEARS;
 
@@ -74,8 +74,8 @@ async function applySubstitutions() {
   _.templateSettings.interpolate = /{([A-Z_]+)}/g;
   config.license = _.template(config.license)(substitutions);
 
-  // -- apply template on strings founds in fileSpecs
-  substituteInStringValues(config, 'fileSpecs');
+  // -- apply template on strings founds in files
+  substituteInStringValues(config, 'files');
   function substituteInStringValues(obj, key) {
     const val = obj[key];
     if (!val) {
@@ -99,8 +99,8 @@ async function applySubstitutions() {
 
 async function loadAction(action) {
   // -- prepare actions
-  for (const specKey of specKeys) { // for each type of file "*.js", "README.md", ....
-    fileSpec = fileSpecs[specKey];
+  for (const specKey of filesKeys) { // for each type of file "*.js", "README.md", ....
+    fileSpec = files[specKey];
     for (const actionKey of Object.keys(fileSpec)) { // for each found action ("footer", "json", ...)
       if (actionKey === action.key) {
         if (typeof fileSpec[actionKey] === 'boolean' && fileSpec[actionKey]) {
@@ -114,9 +114,9 @@ async function loadAction(action) {
 }
 
 function checkInit() {
-  for (const specKey of specKeys) {
-    for (const actionKey of Object.keys(fileSpecs[specKey])) {
-      const actionItem = fileSpecs[specKey][actionKey];
+  for (const specKey of filesKeys) {
+    for (const actionKey of Object.keys(files[specKey])) {
+      const actionItem = files[specKey][actionKey];
       if (!actionItem.actionMethod) {
         exitWithError(`Handler '${actionItem.action}' for '${specKey}:${actionKey}' has not been initialized`);
       }
@@ -155,9 +155,9 @@ function checkInit() {
  * @param {String} fullPath
  */
  function getFileSpec(fullPath) {
-  for (const specKey of specKeys) {
+  for (const specKey of filesKeys) {
     if (fullPath.endsWith(specKey)) {
-      return fileSpecs[specKey];
+      return files[specKey];
     }
   }
 }
@@ -176,7 +176,7 @@ function isIgnored(fullPath) {
 /**
  * Called for each matched file
  * @param {String} fullPath a file Path
- * @param {Object} spec the Specifications from fileSpecs matching this file
+ * @param {Object} spec the Specifications from files matching this file
  */
 async function handleMatchingFile(fullPath, spec) {
   let updatedFile = false;
