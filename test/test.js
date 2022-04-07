@@ -10,7 +10,7 @@ const bin = './bin/source-licenser';
 /* global describe, before, after, it */
 
 describe('source-licenser', async () => {
-  describe('when run with a valid config file and target source directory', async () => {
+  describe('when run with a valid config file and target directory', async () => {
     let sourceDir;
 
     before(async () => {
@@ -28,43 +28,45 @@ describe('source-licenser', async () => {
       sourceDir.cleanup();
     });
 
-    describe('"header"', async () => {
-      it('should add a header if missing', async () => {
+    describe('"header"', () => {
+      it('should add a header if missing', () => {
         checkResult('header-none.js');
       });
 
-      it('should leave files untouched if up-to-date', async () => {
+      it('should leave files untouched if up-to-date', () => {
         checkResult('header-existing.js');
       });
     });
 
-    describe('"footer"', async () => {
-      it('should add a footer if missing', async () => {
+    describe('"footer"', () => {
+      it('should add a footer if missing', () => {
         checkResult('footer-none.md');
       });
 
-      it('should leave files untouched if up-to-date', async () => {
+      it('should leave files untouched if up-to-date', () => {
         checkResult('footer-existing.md');
       });
     });
 
-    describe('"json"', async () => {
+    describe('"json"', () => {
       // TODO: consider splitting into details
-      it('should set JSON properties as configured', async () => {
+      it('should set JSON properties as configured', () => {
         checkResult('package.json');
       });
     });
 
-    describe('"siblingLicenseFile"', async () => {
-      it('should add a license file as configured if missing', async () => {
+    describe('"siblingLicenseFile"', () => {
+      it('should add a license file as configured if missing', () => {
         checkResult('LICENSE');
       });
 
-      it('should leave an existing license file untouched if up-to-date');
+      it('should leave an existing license file untouched if up-to-date', () => {
+        checkResult('LICENSE-EXISTING');
+      });
     });
 
-    describe('"ignore"', async () => {
-      it('should leave specified files untouched even if they match patterns in "files"', async () => {
+    describe('"ignore"', () => {
+      it('should leave specified files untouched even if they match patterns in "files"', () => {
         checkResult('ignore-me/some-module.js');
       });
     });

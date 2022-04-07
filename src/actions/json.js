@@ -17,22 +17,23 @@ module.exports = Object.assign(Object.create(action), {
    */
   async apply (filePath) {
     let jsonData = JSON.parse(await fs.readFile(filePath));
-    const actualContent = JSON.stringify(jsonData, null, 2);
+    const originalContent = JSON.stringify(jsonData, null, 2);
     if (this.settings.force) {
       jsonData = _.merge(jsonData, this.settings.force);
     }
     if (this.settings.defaults) {
-      jsonData = _.mergeWith(jsonData, this.settings.defaults, function (src, dest) {
-        if (typeof src === 'undefined') return dest;
-        return src;
+      jsonData = _.mergeWith(jsonData, this.settings.defaults, function (existingVal, defaultVal) {
+        return (typeof existingVal === 'undefined') ? defaultVal : existingVal;
       });
     }
     if (this.settings.sortPackage) {
       jsonData = sortPackageJson(jsonData);
     }
     const newContent = JSON.stringify(jsonData, null, 2);
-    if (actualContent === newContent) return false; // skip
-
+    if (originalContent === newContent) {
+      // up-to-date: skip
+      return false;
+    }
     await fs.writeFile(filePath, newContent);
     return true;
   }

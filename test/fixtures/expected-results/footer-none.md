@@ -5,8 +5,4 @@ sees only what it wants.
 
 # License
 
-Copyright (c) 2022 Lao Tzu https://hidden.mysteries
-
-[Legalese prose]
-
-SPDX-License-Identifier: BSD-3-Clause
+Non-default license text!

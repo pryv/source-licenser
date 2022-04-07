@@ -1,4 +1,13 @@
 files:
+  # All JavaScript files
+  "*.js":
+    header:
+      startBlock: |
+        /**
+         * @license
+      linePrefix: " * "
+      endBlock: " */"
+
   package.json:
     json:
       force:
@@ -10,23 +19,29 @@ files:
         description: "{DESCRIPTION}"
       sortPackage: true
 
-    siblingLicenseFile: true
+    siblingLicenseFile:
+      name: "LICENSE"
+      # Should override default license text
+      license: |
+        Non-default license text!
 
-  # All JavaScript files
-  "*.js":
-    header:
-      startBlock: |
-        /**
-         * @license
-      linePrefix: " * "
-      endBlock: " */"
-
-  # All Markdown files
-  "*.md":
+  footer-none.md:
     footer:
       startBlock: "\n# License\n\n"
       linePrefix: ""
       endBlock: ""
+      # Should override default license text
+      license: |
+        Non-default license text!
+
+  footer-existing.md:
+    footer:
+      startBlock: "\n# License\n\n"
+      linePrefix: ""
+      endBlock: ""
+
+    siblingLicenseFile:
+      name: "LICENSE-EXISTING"
 
 ignore:
 - ignore-me
