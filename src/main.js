@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('fast-glob');
 
+const logger = require('./logger');
 const loadConfig = require('./loadConfig');
 const substitutions = require('./substitutions');
 const actions = require('./actions');
@@ -13,8 +14,8 @@ const { exit } = require('process');
   // parse command line args
   const argv = yargs(hideBin(process.argv))
     .usage('Usage: $0 [options] <target directory>')
-    .demandOption('c', 'You must specify the configuration file')
-    .demandCommand(1, 'You must specify the target directory')
+    .demandOption('c', logger.formatError('You must specify the configuration file'))
+    .demandCommand(1, logger.formatError('You must specify the target directory'))
     .option('c', {
       alias: 'config-file',
       describe: 'Configuration file',
@@ -29,12 +30,16 @@ const { exit } = require('process');
 
   const configFilePath = path.resolve(argv.configFile);
   if (!fs.existsSync(configFilePath)) {
-    exitWithError(`Config file '${argv.config}' not found`);
+    logger.error(`Config file '${argv.configFile}' not found`);
+    exit(1);
   }
   const targetDirPath = path.resolve(argv._[0]);
   if (!fs.existsSync(targetDirPath) || !fs.lstatSync(targetDirPath).isDirectory()) {
-    exitWithError(`'${argv._}' not found or not a directory`);
+    logger.error(`'${argv._}' not found or not a directory`);
+    exit(1);
   }
+
+  logger.heading('Initializing...');
 
   const config = loadConfig(configFilePath);
 
@@ -51,11 +56,11 @@ const { exit } = require('process');
       const action = Object.create(actions[actionId]);
       action.init(substitutions.apply(actionSettings), defaultLicense);
       files[pattern].push(action);
-      console.debug(`Prepared action: ${pattern} ← ${actionId}`);
+      logger.debug(`Prepared action: ${pattern} ← ${actionId}`);
     }
   }
 
-  console.log();
+  logger.heading('\nGo!');
 
   const startTime = Date.now();
   let totalCount = 0;
@@ -68,25 +73,22 @@ const { exit } = require('process');
   for (const [pattern, fileActions] of Object.entries(files)) {
     const matches = await glob(pattern, globOptions);
     if (matches.length === 0) {
-      console.log(`Warning: found no file matching '${pattern}'`);
+      logger.warning(`Found no file matching '${pattern}'`);
     }
     for (const filePath of matches) {
       for (const action of fileActions) {
         const changed = await action.apply(path.join(targetDirPath, filePath));
         totalCount++;
         if (changed) {
-          console.log(`File updated: ${filePath} (${action.id})`);
+          logger.info(`Updated: ${filePath} (${action.id})`);
           updatedCount++;
+        } else {
+          logger.debug(`Already up-to-date: ${filePath} (${action.id})`);
         }
       }
     }
   }
 
   const elapsedTime = Math.round((Date.now() - startTime) / 10) / 100;
-  console.log(`\nChecked ${totalCount} files, updated ${updatedCount} in ${elapsedTime}s`);
+  logger.info(`\nChecked ${totalCount} files, updated ${updatedCount} in ${elapsedTime}s`);
 })();
-
-function exitWithError (message) {
-  console.error(`Error: ${message}`);
-  exit(1);
-}
