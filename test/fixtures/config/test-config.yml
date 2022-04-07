@@ -13,7 +13,7 @@ files:
     siblingLicenseFile: true
 
   # All JavaScript files
-  .js:
+  "*.js":
     header:
       startBlock: |
         /**
@@ -22,7 +22,7 @@ files:
       endBlock: " */"
 
   # All Markdown files
-  .md:
+  "*.md":
     footer:
       startBlock: "\n# License\n\n"
       linePrefix: ""

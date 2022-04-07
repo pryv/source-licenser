@@ -14,7 +14,7 @@ files:
     siblingLicenseFile: true
 
   # All JavaScript files
-  .js:
+  "*.js":
     header:
       startBlock: >-
         /**
