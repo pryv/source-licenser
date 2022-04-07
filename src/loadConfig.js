@@ -40,7 +40,18 @@ module.exports = loadConfig;
 
 function loadConfig (configFilePath) {
   nconf.argv().env();
+
   loadFile('local', configFilePath);
+
+  nconf.required([
+    'files',
+    'license'
+  ]);
+  nconf.defaults({
+    ignore: [],
+    substitutions: {}
+  });
+
   return nconf.get();
 
   function loadFile (scope, filePath) {

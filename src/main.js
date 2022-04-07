@@ -41,23 +41,35 @@ const { exit } = require('process');
 
   logger.heading('Initializing...');
 
-  const config = loadConfig(configFilePath);
+  let config;
+  try {
+    config = loadConfig(configFilePath);
+  } catch (e) {
+    logger.error(`Could not load configuration file: ${e.message}`);
+    exit(1);
+  }
 
   substitutions.init(config.substitutions);
-  const defaultLicense = substitutions.apply(config.license);
 
   const files = {};
-  for (const [pattern, fileActionsConfig] of Object.entries(config.files)) {
-    files[pattern] = [];
-    for (const [actionId, actionSettings] of Object.entries(fileActionsConfig)) {
-      if (!actions[actionId]) {
-        throw new Error(`Unknown action '${actionId}'`);
+  try {
+    const defaultLicense = substitutions.apply(config.license);
+
+    for (const [pattern, fileActionsConfig] of Object.entries(config.files)) {
+      files[pattern] = [];
+      for (const [actionId, actionSettings] of Object.entries(fileActionsConfig)) {
+        if (!actions[actionId]) {
+          throw new Error(`Unknown action '${actionId}'`);
+        }
+        const action = Object.create(actions[actionId]);
+        action.init(substitutions.apply(actionSettings), defaultLicense);
+        files[pattern].push(action);
+        logger.debug(`Prepared action: ${pattern} ← ${actionId}`);
       }
-      const action = Object.create(actions[actionId]);
-      action.init(substitutions.apply(actionSettings), defaultLicense);
-      files[pattern].push(action);
-      logger.debug(`Prepared action: ${pattern} ← ${actionId}`);
     }
+  } catch (e) {
+    logger.error(`Initialization failed: ${e.message}`);
+    exit(1);
   }
 
   logger.heading('\nGo!');

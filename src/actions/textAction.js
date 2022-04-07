@@ -5,6 +5,12 @@ const action = require('./action');
 module.exports = Object.assign(Object.create(action), {
   init (id, actionSettings, defaultLicense) {
     action.init.call(this, id, defaultLicense);
+    if (!actionSettings ||
+        typeof actionSettings.startBlock !== 'string' ||
+        typeof actionSettings.endBlock !== 'string') {
+      this.throwValidationError('startBlock', 'endBlock');
+    }
+    this.linePrefix = actionSettings.linePrefix ?? '';
     this.license = actionSettings.license;
 
     const startLines = getLines(actionSettings.startBlock).map(l => l.trimEnd());

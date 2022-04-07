@@ -2,10 +2,14 @@ const path = require('path');
 const fs = require('fs/promises');
 
 const action = require('./action');
+const actionId = 'siblingLicenseFile';
 
 module.exports = Object.assign(Object.create(action), {
   init (actionSettings, defaultLicense) {
-    action.init.call(this, 'siblingLicenseFile', defaultLicense);
+    action.init.call(this, actionId, defaultLicense);
+    if (!actionSettings || typeof actionSettings.name !== 'string') {
+      this.throwValidationError('name');
+    }
     this.licenseFileName = actionSettings.name;
     this.license = actionSettings.license;
   },
