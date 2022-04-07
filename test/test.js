@@ -30,51 +30,66 @@ describe('source-licenser', async () => {
 
     describe('"header"', () => {
       it('should add a header if missing', () => {
-        checkResult('header-none.js');
+        checkResultFile('header-none.js');
       });
 
       it('should leave files untouched if up-to-date', () => {
-        checkResult('header-existing.js');
+        checkResultFile('header-existing.js');
       });
     });
 
     describe('"footer"', () => {
       it('should add a footer if missing', () => {
-        checkResult('footer-none.md');
+        checkResultFile('footer-none.md');
       });
 
       it('should leave files untouched if up-to-date', () => {
-        checkResult('footer-existing.md');
+        checkResultFile('footer-existing.md');
       });
     });
 
     describe('"json"', () => {
       // TODO: consider splitting into details
       it('should set JSON properties as configured', () => {
-        checkResult('package.json');
+        checkResultFile('package.json');
       });
     });
 
     describe('"siblingLicenseFile"', () => {
       it('should add a license file as configured if missing', () => {
-        checkResult('LICENSE');
+        checkResultFile('LICENSE');
       });
 
       it('should leave an existing license file untouched if up-to-date', () => {
-        checkResult('LICENSE-EXISTING');
+        checkResultFile('LICENSE-EXISTING');
       });
     });
 
     describe('"ignore"', () => {
       it('should leave specified files untouched even if they match patterns in "files"', () => {
-        checkResult('ignore-me/some-module.js');
+        checkResultFile('ignore-me/some-module.js');
       });
     });
 
-    function checkResult (sourceFileName, description) {
+    describe('helper substitutions', () => {
+      it('"CURRENT_YEAR" should evaluate to the current year', () => {
+        checkResultJSON('helper-substitutions.json', 'currentYear', new Date().getFullYear());
+      });
+
+      it('"YEARS" should evaluate to the configured "start–end" years', () => {
+        checkResultJSON('helper-substitutions.json', 'years', `2020–${new Date().getFullYear()}`);
+      });
+    });
+
+    function checkResultFile (sourceFileName) {
       const expected = fileContents(path.join(fixture('expected-results'), sourceFileName));
       const actual = fileContents(path.join(sourceDir.path, sourceFileName));
       assert.equal(actual, expected);
+    }
+
+    function checkResultJSON (sourceFileName, key, expectedValue) {
+      const json = JSON.parse(fse.readFileSync(path.join(sourceDir.path, sourceFileName)));
+      assert.equal(json[key], expectedValue);
     }
   });
 
