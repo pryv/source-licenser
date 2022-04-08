@@ -1,5 +1,15 @@
 files:
+  "**/*.js":
+    # Header comment with default license text
+    header:
+      startBlock: |
+        /**
+         * @license
+      linePrefix: " * "
+      endBlock: " */"
+
   package.json:
+    # Forced & default JSON key values for package.json
     json:
       force:
         author: "{AUTHOR_NAME} <{AUTHOR_EMAIL}> ({AUTHOR_WEB})"
@@ -10,26 +20,27 @@ files:
         description: "{DESCRIPTION}"
       sortPackage: true
 
-    # LICENSE file in the same directory as package.json
-    siblingLicenseFile: true
+    # License file in the same directory as package.json
+    siblingLicenseFile:
+      name: "LICENSE"
 
-  # All JavaScript files
-  "*.js":
-    header:
-      startBlock: >-
-        /**
-         * @license
-      linePrefix: " * "
-      endBlock: "\n */\n"
+  README.md:
+    # Footer section with custom license text (link to license file)
+    footer:
+      startBlock: "\n\n## License\n\n"
+      linePrefix: ""
+      endBlock: ""
+      license: "[{SPDX}](LICENSE)"
 
 ignore:
-- node_modules
 - ".git"
+- ".vscode"
+- node_modules
+- test
 
+# Default license text
 license: |
   Copyright (c) {YEARS} {AUTHOR_NAME} {AUTHOR_WEB}
-
-  This file is part of Open-Pryv.io and released under BSD-Clause-3 License
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
@@ -58,7 +69,7 @@ license: |
 
   SPDX-License-Identifier: {SPDX}
 
-# Values here will be replaced in `license` and `json` properties
+# Values here will be replaced in `license` and `json` settings
 substitutions:
   # `{YEARS}` will evaluate to `end` if `start` == `end`, and to `start–end` otherwise
   YEARS:
@@ -68,6 +79,6 @@ substitutions:
   AUTHOR_NAME: "Pryv S.A"
   AUTHOR_EMAIL: info@pryv.com
   AUTHOR_WEB: https://pryv.com
-  DESCRIPTION: "Add license information to sourcefiles."
+  DESCRIPTION: "Add license information to source files."
   HOMEPAGE: https://github.com/pryv/source-licenser
   SPDX: BSD-3-Clause

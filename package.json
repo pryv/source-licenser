@@ -22,7 +22,7 @@
     "source-licenser": "bin/source-licenser"
   },
   "scripts": {
-    "license-me": "./bin/source-licenser ./config/licenser-config.yml ./",
+    "license-me": "./bin/source-licenser -c ./config/licenser-config.yml ./",
     "test": "semistandard && mocha",
     "test-cover": "nyc npm run test"
   },
