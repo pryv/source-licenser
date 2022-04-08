@@ -1,39 +1,22 @@
 # Source Licenser
 
-Add license information to source files:
+Add license information to source files. Checks target files, looks for existing license content and replaces it if needed. Supports header, footer, json and sibling license file content, with variable substitution and a couple of other useful features.
 
-- Recursively checks all files in a directory
-- Detects existing license content and replaces it if needed
-- Can be extended for other file types
-
-How it works:
-
-- Actions are defined per fileTypes ex: `.js` , `README.md`, `package.json`.
-- Actions can be:
-  - `header`:  Add license text at the beginning of the file. Comment characters can be defined.
-
-    ​	Example: for `.js` file add
-
-    ```javascript
-    /**
-     * license content
-     */
-    ```
-
-  - `footer`: Add license text at the end of the file. Comment characters can be defined.
-  - `json`: Add or complete fields of json files. (Ex: package.json)
-  - `siblingLicenseFile`: Add a `LICENSE` text file at the same level as the matching file.
+1. Define search patterns for the target files in your configuration, e.g. `**/*.js`
+2. Define the action(s) to be taken for each pattern, such as adding/updating header comments in source files, a footer section in a doc, properties in a JSON file or a `LICENSE` file
+3. Put in your license text (default or custom per action)
+4. Use variable substitutions to keep it DRY
 
 
 ## Usage
 
 ### Install
 
-`npm install source-licenser [-g]`
+`npm install [-g] source-licenser`
 
 ### Setup
 
-Define a configuration file as per your needs (see below). You can also use `config/licenser-config.yml` as inspiration.
+Define a configuration file as per your needs (see below). You can also use the licenser's [own config file](./config/licenser-config.yml) as inspiration.
 
 ### Run
 
@@ -45,47 +28,54 @@ Example: `source-licenser --config-file ./config/licenser-config.yml ./`
 
 ### `files`
 
-Actions are specified in the `files` configuration object. Each time a file matches a specification, all actions defined therein will be applied.
+Define search patterns for your target files in the `files` configuration object (see also `ignore` below). Usual glob patterns such as `**/*.js` are supported. For each pattern, define the action(s) to be taken:
 
-#### `header`
+```yaml
+files:
+  <pattern>:
+    <action>:
+      <setting>: <value>
+  ...
+```
 
-Prepend the license content to all files matching a spec. Settings:
+#### `header` and `footer`
 
-- `startBlock`: The starting line of the license block (used to determine if a file already has a license)
-- `linePrefix`: Will replace all lines return '\n' of LICENSE file
-- `endBlock`: The end of the license block. Used to determine the end of the existing license.
+Respectively prepend or append license content to files. Settings:
 
-#### `footer`
-
-Append the license content to all files matching a spec. Settings:
-
-- `startBlock`: The starting line of the license block (used to determine if a file already has a license)
-- `linePrefix`: Will replace all lines return '\n' of LICENSE file
-- `endBlock`: The end of the license block.
+- `startBlock` (string): The starting line(s) of the license block, used to determine if a header already exists. E.g. `/**\n * @license`
+- `linePrefix` (string, optional): A prefix for each line of the `license` text. E.g. ` * `
+- `endBlock` (string): The ending line(s) of the license block, used to determine where the existing header ends.
+- `license` (string, optional): Action-specific license text. Defaults to the root `license` setting (see below).
 
 #### `siblingLicenseFile`
 
-Add a "LICENSE" file at the same level as the matching file.
+Add a license file at the same level as the matching file(s). Settings:
+
+- `name` (string): The name of the license file. E.g. `LICENSE`
+- `license` (string, optional): Action-specific license text. Defaults to the root `license` setting (see below).
 
 #### `json`
 
-Update a JSON field (mainly used for `package.json`). Settings:
+Add/update JSON properties (mainly aimed at `package.json`). Settings:
 
-- `force`: Override fields by the specified values
-- `defaults`: Update fields if not defined
-- `sortPackage`: `true` or `false`. Order the fields as per `package.json`
+- `force` (key-value, optional): Properties to always set regardless of whether a value already exists
+- `defaults` (key-value, optional): Properties to set if not defined
+- `sortPackage` (`true`|`false`, optional): Ensure a consistent ordering of `package.json` properties
 
-### `ignore`
+### `ignore` (optional)
 
-List file patterns to be ignored.
+List file patterns to be ignored
 
 ### `license`
 
-The license text.
+The license text. Can be overridden in action settings.
 
-### `substitutions`
+### `substitutions` (optional)
 
-Define values that can be used in `license` or `json` properties with the format `{NAME}`.
+Define variables that can be used in `license` or action settings with the format `{NAME}`. The following helper variables are built in (but can be overridden):
+
+- `CURRENT_YEAR` will evaluate to… 🥁… the current year
+- `YEARS` will evaluate to `end` if `start` == `end`, and to `start–end` otherwise
 
 
 ## License
