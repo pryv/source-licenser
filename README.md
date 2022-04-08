@@ -2,11 +2,6 @@
 
 Add license information to source files. Checks target files, looks for existing license content and replaces it if needed. Supports header, footer, json and sibling license file content, with variable substitution and a couple of other useful features.
 
-1. Define search patterns for the target files in your configuration, e.g. `**/*.js`
-2. Define the action(s) to be taken for each pattern, such as adding/updating header comments in source files, a footer section in a doc, properties in a JSON file or a `LICENSE` file
-3. Put in your license text (default or custom per action)
-4. Use variable substitutions to keep it DRY
-
 
 ## Usage
 
@@ -16,7 +11,7 @@ Add license information to source files. Checks target files, looks for existing
 
 ### Setup
 
-Define a configuration file as per your needs (see below). You can also use the licenser's [own config file](./config/licenser-config.yml) as inspiration.
+Define a configuration file as per your needs (see below). You can use the licenser's [own config file](./config/licenser-config.yml) as a starting point.
 
 ### Run
 
@@ -26,19 +21,33 @@ Example: `source-licenser --config-file ./config/licenser-config.yml ./`
 
 ### Configuration file
 
-### `files`
-
-Define search patterns for your target files in the `files` configuration object (see also `ignore` below). Usual glob patterns such as `**/*.js` are supported. For each pattern, define the action(s) to be taken:
-
 ```yaml
 files:
   <pattern>:
     <action>:
       <setting>: <value>
+      ...
+    ...
+  ...
+
+ignore:
+- <pattern>
+- ...
+
+license: |
+  <text>
+  ...
+
+substitutions:
+  <key>: <value>
   ...
 ```
 
-#### `header` and `footer`
+### `files`
+
+Define search patterns for your target files in the `files` configuration object (see also `ignore` below). Usual glob patterns such as `**/*.js` are supported. For each pattern, define the action(s) to be taken:
+
+#### `header` and `footer` actions
 
 Respectively prepend or append license content to files. Settings:
 
@@ -47,14 +56,14 @@ Respectively prepend or append license content to files. Settings:
 - `endBlock` (string): The ending line(s) of the license block, used to determine where the existing header ends.
 - `license` (string, optional): Action-specific license text. Defaults to the root `license` setting (see below).
 
-#### `siblingLicenseFile`
+#### `siblingLicenseFile` action
 
 Add a license file at the same level as the matching file(s). Settings:
 
 - `name` (string): The name of the license file. E.g. `LICENSE`
 - `license` (string, optional): Action-specific license text. Defaults to the root `license` setting (see below).
 
-#### `json`
+#### `json` action
 
 Add/update JSON properties (mainly aimed at `package.json`). Settings:
 
