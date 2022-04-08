@@ -64,8 +64,8 @@ const { exit } = require('process');
         const action = Object.create(actions[actionId]);
         action.init(substitutions.apply(actionSettings), defaultLicense);
         files[pattern].push(action);
-        logger.debug(`Prepared action: ${pattern} ← ${actionId}`);
       }
+      logger.debug(`✓ ${pattern} → ${Object.keys(fileActionsConfig).join(', ')}`);
     }
   } catch (e) {
     logger.error(`Initialization failed: ${e.message}`);
@@ -92,15 +92,15 @@ const { exit } = require('process');
         const changed = await action.apply(path.join(targetDirPath, filePath));
         totalCount++;
         if (changed) {
-          logger.info(`Updated: ${filePath} (${action.id})`);
+          logger.info(`✓ ${filePath} updated (${action.id})`);
           updatedCount++;
         } else {
-          logger.debug(`Already up-to-date: ${filePath} (${action.id})`);
+          logger.debug(`· ${filePath} skipped, already up-to-date (${action.id})`);
         }
       }
     }
   }
 
   const elapsedTime = Math.round((Date.now() - startTime) / 10) / 100;
-  logger.info(`\nChecked ${totalCount} files, updated ${updatedCount} in ${elapsedTime}s`);
+  logger.info(`\nUpdated ${updatedCount} out of ${totalCount} files in ${elapsedTime}s`);
 })();
