@@ -1,5 +1,7 @@
 # Source Licenser
 
+[![CI](https://github.com/pryv/source-licenser/actions/workflows/ci.yml/badge.svg)](https://github.com/pryv/source-licenser/actions/workflows/ci.yml) ![npm](https://img.shields.io/npm/v/source-licenser)
+
 Add license information to source files. Checks target files, looks for existing license content and replaces it if needed. Supports header, footer, json and sibling license file content, with variable substitution and a couple of other useful features.
 
 
@@ -21,17 +23,19 @@ Example: `source-licenser --config-file ./config/licenser-config.yml ./`
 
 ### Configuration file
 
+YAML (used below), JSON and JS are supported.
+
 ```yaml
 files:
-  <pattern>:
-    <action>:
-      <setting>: <value>
+  <pattern>: # e.g. "**/*.js"
+    <action>: # header, footer, siblingLicenseFile or json
+      <setting>: <value> # see details of actions below
       ...
     ...
   ...
 
 ignore:
-- <pattern>
+- <pattern> # e.g. git, node_modules
 - ...
 
 license: |
@@ -73,7 +77,7 @@ Add/update JSON properties (mainly aimed at `package.json`). Settings:
 
 ### `ignore` (optional)
 
-List file patterns to be ignored
+List file patterns to be ignored.
 
 ### `license`
 
@@ -83,8 +87,25 @@ The license text. Can be overridden in action settings.
 
 Define variables that can be used in `license` or action settings with the format `{NAME}`. The following helper variables are built in (but can be overridden):
 
-- `CURRENT_YEAR` will evaluate to… 🥁… the current year
-- `YEARS` will evaluate to `end` if `start` == `end`, and to `start–end` otherwise
+- `CURRENT_YEAR` simply evaluates to the current (full) year, e.g. `2022`
+- `YEARS`, when configured with `start` and `end` values, evaluates to `end` if `start` == `end`, and to `start–end` otherwise. `end` accepts the value `CURRENT_YEAR`. For example:
+  ```
+  substitutions:
+    YEARS:
+      start: 2020
+      end: CURRENT_YEAR
+  ```
+
+
+## Contributing
+
+`npm test` runs the [tests](./test) with [Mocha](https://mochajs.org/).
+
+`npm run test-cover` runs the tests and outputs coverage stats with [Istanbul](https://istanbul.js.org/).
+
+`npm run license-me` runs source-licenser on itself.
+
+The code follows the [Semi-Standard](https://github.com/standard/semistandard) style.
 
 
 ## License
