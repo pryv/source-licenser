@@ -1,6 +1,6 @@
 # Source Licenser
 
-[![CI](https://github.com/pryv/source-licenser/actions/workflows/ci.yml/badge.svg)](https://github.com/pryv/source-licenser/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/source-licenser)](https://www.npmjs.com/package/source-licenser)
+[![CI](https://github.com/pryv/source-licenser/workflows/CI/badge.svg)](https://github.com/pryv/source-licenser/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/source-licenser)](https://www.npmjs.com/package/source-licenser)
 
 Add license information to source files. Checks target files, looks for existing license content and replaces it if needed. Supports header, footer, json and sibling license file content, with variable substitution and a couple of other useful features.
 
