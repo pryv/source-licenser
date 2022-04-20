@@ -7,6 +7,8 @@ files:
          * @license
       linePrefix: " * "
       endBlock: " */"
+      license: |
+        [{SPDX}]({LICENSE_URL})
 
   package.json:
     # Forced & default JSON key values for package.json
@@ -30,7 +32,7 @@ files:
       startBlock: "\n\n## License\n\n"
       linePrefix: ""
       endBlock: ""
-      license: "[{SPDX}](LICENSE)"
+      license: "[{SPDX}]({LICENSE_URL})"
 
 ignore:
 - ".git"
@@ -81,4 +83,5 @@ substitutions:
   AUTHOR_WEB: https://pryv.com
   DESCRIPTION: "Add license information to source files."
   HOMEPAGE: https://github.com/pryv/source-licenser
+  LICENSE_URL: https://github.com/pryv/source-licenser/blob/master/LICENSE
   SPDX: BSD-3-Clause

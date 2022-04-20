@@ -110,4 +110,4 @@ The code follows the [Semi-Standard](https://github.com/standard/semistandard) s
 
 ## License
 
-[BSD-3-Clause](LICENSE)
+[BSD-3-Clause](https://github.com/pryv/source-licenser/blob/master/LICENSE)
