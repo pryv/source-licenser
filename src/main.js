@@ -90,13 +90,13 @@ const { exit } = require('process');
       files[pattern] = [];
       for (const [actionId, actionSettings] of Object.entries(fileActionsConfig)) {
         if (!actions[actionId]) {
-          throw new Error(`Unknown action '${actionId}'`);
+          throw new Error(`Unknown action '${actionId}' for ${pattern}`);
         }
         const action = Object.create(actions[actionId]);
         action.init(substitutions.apply(actionSettings), defaultLicense);
         files[pattern].push(action);
       }
-      logger.debug(`✓ ${pattern} → ${Object.keys(fileActionsConfig).join(', ')}`);
+      logger.info(`✓ ${pattern} → ${Object.keys(fileActionsConfig).join(', ')}`);
     }
   } catch (e) {
     logger.error(`Initialization failed: ${e.message}`);
